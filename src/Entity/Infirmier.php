@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\InfirmierRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -42,6 +44,17 @@ class Infirmier
      * @ORM\JoinColumn(nullable=false)
      */
     private $service;
+
+    /**
+     * @ORM\OneToOne(targetEntity=User::class, mappedBy="infirmier", cascade={"persist", "remove"})
+     */
+    private $user;
+
+
+    public function __construct()
+    {
+        $this->users = new ArrayCollection();
+    }
 
 
     public function getId(): ?int
@@ -108,6 +121,30 @@ class Infirmier
 
         return $this;
     }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($user === null && $this->user !== null) {
+            $this->user->setInfirmier(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($user !== null && $user->getInfirmier() !== $this) {
+            $user->setInfirmier($this);
+        }
+
+        $this->user = $user;
+
+        return $this;
+    }
+
+
 
 
 }
