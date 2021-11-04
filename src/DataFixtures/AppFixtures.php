@@ -7,12 +7,25 @@ use App\Entity\Infirmier;
 use App\Entity\Lit;
 use App\Entity\Patient;
 use App\Entity\Sejour;
+use App\Entity\User;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class AppFixtures extends Fixture
 {
+
+
+    /** @var UserPasswordHasherInterface
+     * Le hasheur de mots de passe
+     *
+     */
+    private $passwordHasher;
+
+    public function __construct(UserPasswordHasherInterface $passwordHasher){
+        $this->passwordHasher= $passwordHasher;
+    }
     public function load(ObjectManager $manager): void
     {
         $faker = Factory::create('fr_FR');
@@ -52,6 +65,16 @@ class AppFixtures extends Fixture
                 $manager->persist($sejour);
 
             }
+        }
+
+        for ($u = 0; $u<3; $u++){
+            $user = new User();
+
+            $hash = $this->passwordHasher->hashPassword($user, "");
+            $user->setEmail($faker->email)
+                ->setPassword($hash);
+
+            $manager->persist($user);
         }
 
 
