@@ -70,7 +70,7 @@ class AppFixtures extends Fixture
         for ($u = 0; $u<3; $u++){
             $user = new User();
 
-            $hash = $this->passwordHasher->hashPassword($user, "");
+            $hash = $this->passwordHasher->hashPassword($user, "Epsi.123");
             $user->setEmail($faker->email)
                 ->setPassword($hash);
 
