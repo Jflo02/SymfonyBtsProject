@@ -7,44 +7,54 @@ use App\Repository\SejourRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=SejourRepository::class)
- * @ApiResource()
  */
+#[ApiResource(
+    normalizationContext: ['groups' => ['sejour_read']]
+)]
 class Sejour
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"sejour_read", "patients_read"})
+     *
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"sejour_read", "patients_read"})
      */
     private $dateEntree;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"sejour_read", "patients_read"})
      */
     private $dateSortie;
 
     /**
      * @ORM\ManyToOne(targetEntity=Patient::class, inversedBy="sejours")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"sejour_read"})
      */
     private $patient;
 
     /**
      * @ORM\ManyToOne(targetEntity=Lit::class, inversedBy="sejours")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"sejour_read", "patients_read"})
      */
     private $lit;
 
     /**
      * @ORM\OneToMany(targetEntity=ServiceSejour::class, mappedBy="sejour")
+     * @Groups({"sejour_read", "patients_read"})
      */
     private $services;
 
