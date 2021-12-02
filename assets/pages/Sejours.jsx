@@ -5,6 +5,7 @@ import useState from "react-usestateref";
 export default function Sejours() {
     const [sejours, setSejours, sejoursRef] = useState([]);
     const [lits, setLits, litsRef] = useState([]);
+    const [litsAvailable, setLitsAvailable, litsAvailableRef] = useState([]);
 
     const fetchSejours = async () => {
         const data = await axios.get('http://127.0.0.1:8000/api/sejours')
@@ -20,10 +21,25 @@ export default function Sejours() {
         setLits(data)
         console.log('lits: ')
         console.log(litsRef.current)
+        //on filtre les lits pour ne garder que ceux qui sont disponibles
+        LitsAvailable()
     }
 
-    const isLitAvailable = () => {
-        
+    const LitsAvailable = () => {
+        litsRef.current.forEach(lit => {
+            if (lit.sejours.length > 0) {
+                const dateSortieDernierSejour = Date.parse(lit.sejours.at(-1).dateSortie);
+                //si le dernier sejour du lit a une date passé alors il est disponible
+                if (!(dateSortieDernierSejour > Date.now())) {
+                    setLitsAvailable([...litsAvailableRef.current, lit])
+                }
+                //si le lit n'a jamais été affecté à un séjour, il est disponible
+            } else {
+                setLitsAvailable([...litsAvailableRef.current, lit])
+            }
+
+        });
+
     }
 
     useEffect(() => {
@@ -41,8 +57,8 @@ export default function Sejours() {
                 <input type='date' name='dateEntree'></input>
                 <label>Lit </label>
                 <select name='lits'>
-                    {litsRef.current.map((lit) => (
-                        < option value="test" key={lit.id} >
+                    {litsAvailableRef.current.map((lit) => (
+                        < option value="lit" key={lit.id} >
                             {lit.id}
                         </option>
                     ))}
