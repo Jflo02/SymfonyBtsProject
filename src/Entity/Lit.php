@@ -7,17 +7,22 @@ use App\Repository\LitRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * @ORM\Entity(repositoryClass=LitRepository::class)
- * @ApiResource()
  */
+#[ApiResource(
+    normalizationContext: ['groups' => ['lits_read']]
+)]
 class Lit
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"lits_read"})
      */
     private $id;
 
@@ -25,11 +30,13 @@ class Lit
     /**
      * @ORM\ManyToOne(targetEntity=Chambre::class, inversedBy="lit")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"lits_read"})
      */
     private $chambre;
 
     /**
      * @ORM\OneToMany(targetEntity=Sejour::class, mappedBy="lit")
+     * @Groups({"lits_read"})
      */
     private $sejours;
 

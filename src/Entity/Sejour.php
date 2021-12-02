@@ -21,27 +21,27 @@ class Sejour
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"sejour_read", "patients_read"})
+     * @Groups({"sejour_read", "patients_read", "lits_read"})
      *
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"sejour_read", "patients_read"})
+     * @Groups({"sejour_read", "patients_read", "lits_read"})
      */
     private $dateEntree;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"sejour_read", "patients_read"})
+     * @Groups({"sejour_read", "patients_read", "lits_read"})
      */
     private $dateSortie;
 
     /**
      * @ORM\ManyToOne(targetEntity=Patient::class, inversedBy="sejours")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"sejour_read"})
+     * @Groups({"sejour_read", "lits_read"})
      */
     private $patient;
 
@@ -54,7 +54,7 @@ class Sejour
 
     /**
      * @ORM\OneToMany(targetEntity=ServiceSejour::class, mappedBy="sejour")
-     * @Groups({"sejour_read", "patients_read"})
+     * @Groups({"sejour_read", "patients_read", "lits_read"})
      */
     private $services;
 
