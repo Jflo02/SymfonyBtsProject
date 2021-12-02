@@ -14,7 +14,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=LitRepository::class)
  */
 #[ApiResource(
-    normalizationContext: ['groups' => ['lits_read']]
+    normalizationContext: ['groups' => ['lits_read']],
+    attributes: ["pagination_enabled" => false]
 )]
 class Lit
 {
