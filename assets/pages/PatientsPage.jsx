@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 const PatientsPage = (props) => {
   const [patients, setPatients] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
+  const [search, setSearch] = useState("");
 
   useEffect(() => {
     axios
@@ -24,11 +26,18 @@ const PatientsPage = (props) => {
     pages.push(i);
   }
 
+  const handleSearch = event =>{
+    const value = event.currentTarget.value;
+    setSearch(value);
+  }
+
+  const filteredPatients = patients.filter(c => c.prenom.toLowerCase().includes(search.toLowerCase())) ||
+      c.nom.toLowerCase().includes(search.toLowerCase())
 
   // d'ou on part (start) pendant combien (itemsPerpage)
   const start = currentPage * itemsPerpage - itemsPerpage;
   //               3 *         10           - 10   = 20 
-  const pagignatedPatients = patients.slice(start, start + itemsPerpage);
+  const pagignatedPatients = filteredPatients.slice(start, start + itemsPerpage);
 
 
   console.log(pages);
@@ -36,6 +45,11 @@ const PatientsPage = (props) => {
   return (
     <>
       <h1>Liste des patients</h1>
+
+      <div className="form-group">
+        <input type="text" onChange={handleSearch} value={search} className="form-control" placeholder="Recherche ..."/>
+      </div>
+
       <table className="table table-hover">
         <thead>
           <tr>
@@ -60,7 +74,8 @@ const PatientsPage = (props) => {
               <td>
                 <button className="btn btn-sm btn-danger">Supprimer</button>
               </td>
-              <td></td>
+              <td>
+              </td>
               <td></td>
               <td></td>
             </tr>
