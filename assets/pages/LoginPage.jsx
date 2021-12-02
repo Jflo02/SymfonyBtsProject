@@ -2,9 +2,9 @@ import React, { useContext, useState } from "react";
 import axios from "axios";
 import AuthAPI from "../services/authAPI";
 import AuthContext from "../contexts/AuthContext";
+import Field from "../components/forms/Field";
 
-const LoginPage = ({ history}) => {
-
+const LoginPage = ({ history }) => {
   const { setIsAuthenticated } = useContext(AuthContext);
 
   const [credentials, setCredentials] = useState({
@@ -14,13 +14,12 @@ const LoginPage = ({ history}) => {
 
   const [error, setError] = useState("");
 
-// gestion des champs
+  // gestion des champs
   const handleChange = ({ currentTarget }) => {
     const { value, name } = currentTarget;
 
     setCredentials({ ...credentials, [name]: value });
   };
-
 
   // gestion du submit
   const handleSubmit = async (event) => {
@@ -38,34 +37,26 @@ const LoginPage = ({ history}) => {
 
   return (
     <>
-      <h1>hello</h1>
+      <h1>Page d'Inscription</h1>
 
       <form onSubmit={handleSubmit}>
-        <div className="form-group">
-          <label htmlFor="username"> Adresse email</label>
-          <input
-            value={credentials.username}
-            onChange={handleChange}
-            type="email"
-            placeholder="Adresse email de connexion"
-            name="username"
-            className={"form-control" + (error && "is-invalid")}
-            id="username"
-          />
-          {error && <p className="invalid-feedback">{error}</p>}
-        </div>
-        <div className="form-group">
-          <label htmlFor="password"> Mot de passe</label>
-          <input
-            value={credentials.password}
-            onChange={handleChange}
-            type="password"
-            placeholder="mot de passe"
-            name="password"
-            className="form-control"
-            id="password"
-          />
-        </div>
+        <Field
+          label="Adresse email"
+          name="username"
+          value={credentials.username}
+          onChange={handleChange}
+          placeholder="Adresse email de connexion"
+          error={error}
+        />
+        <Field
+          label="Mot de passe"
+          name="password"
+          value={credentials.password}
+          onChange={handleChange}
+          error=""
+          type="password"
+        />
+
         <div className="form-group">
           <button type="submit" className="btn btn-success">
             Je me connecte

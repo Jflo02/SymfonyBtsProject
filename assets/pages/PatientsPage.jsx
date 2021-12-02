@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { NavLink } from 'react-router-dom';
 
 const PatientsPage = (props) => {
   const [patients, setPatients] = useState([]);
@@ -44,6 +45,8 @@ const PatientsPage = (props) => {
   console.log('Current page =' +currentPage)
   return (
     <>
+      <NavLink to="/ajoutPatient" className="btn btn-primary"> Ajouter</NavLink>
+      <p></p>
       <h1>Liste des patients</h1>
 
       <div className="form-group">

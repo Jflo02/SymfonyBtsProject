@@ -12,6 +12,7 @@ import AuthAPI from "./services/authAPI";
 import AuthContext from './contexts/AuthContext';
 import PrivateRoute from "./components/PrivateRoute";
 import contextValue from './contexts/AuthContext';
+import PatientPage from './pages/PatientPage';
 
 AuthAPI.setup();
 
@@ -23,7 +24,7 @@ const App = () => {
     const NavbarWithRouter  = withRouter(Navbar);
 
     return (
-    <AuthContext.Provider value={contextValue}>
+    <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated}}>
         <HashRouter> 
             <NavbarWithRouter/>
 
@@ -31,7 +32,9 @@ const App = () => {
                 <Switch>
                     <Route path="/login"  component={LoginPage} />
                     <PrivateRoute path="/patients" component={PatientsPage}/>
+                    <PrivateRoute path="/patients/:id" component={PatientPage}/>
                     <PrivateRoute path="/sejours" component={Sejours}/>
+                    
                     <Route path="/" component={HomePage}/>
                 </Switch>
             </main>         
