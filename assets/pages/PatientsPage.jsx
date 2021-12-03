@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { NavLink } from 'react-router-dom';
+import { NavLink } from "react-router-dom";
 
 const PatientsPage = (props) => {
   const [patients, setPatients] = useState([]);
@@ -16,41 +16,56 @@ const PatientsPage = (props) => {
       .catch((error) => console.log(error.response));
   }, []);
 
-  const handlePageChange = (page) =>{
+  const handlePageChange = (page) => {
     setCurrentPage(page);
-  }
+  };
   const itemsPerpage = 10;
   const pagesCount = Math.ceil(patients.length / itemsPerpage);
   const pages = [];
-  console.log(" page count ="+ pagesCount)
+  console.log(" page count =" + pagesCount);
   for (let i = 1; i <= pagesCount; i++) {
     pages.push(i);
   }
 
-  const handleSearch = event =>{
+  const handleSearch = (event) => {
     const value = event.currentTarget.value;
     setSearch(value);
-  }
+  };
 
-  const filteredPatients = patients.filter(c => c.prenom.toLowerCase().includes(search.toLowerCase())) ||
-      c.nom.toLowerCase().includes(search.toLowerCase())
+  const filteredPatients =
+    patients.filter((c) =>
+      c.prenom.toLowerCase().includes(search.toLowerCase())
+    ) || c.nom.toLowerCase().includes(search.toLowerCase());
 
   // d'ou on part (start) pendant combien (itemsPerpage)
   const start = currentPage * itemsPerpage - itemsPerpage;
-  //               3 *         10           - 10   = 20 
-  const pagignatedPatients = filteredPatients.slice(start, start + itemsPerpage);
+  //               3 *         10           - 10   = 20
+  const pagignatedPatients = filteredPatients.slice(
+    start,
+    start + itemsPerpage
+  );
 
-
-  console.log(pages);
-  console.log('Current page =' +currentPage)
   return (
     <>
-      <NavLink to="/ajoutPatient" className="btn btn-primary"> Ajouter</NavLink>
-      <p></p>
-      <h1>Liste des patients</h1>
-
+      <div className="mb-3 d-flex justify-content-between align-items-center">
+        <h1>Liste des patients</h1>
+        <Link
+          to="/patients/new"
+          className="btn btn-primary"
+          className="btn btn-primary"
+        >
+          {" "}
+          Ajouter
+        </Link>
+      </div>
       <div className="form-group">
-        <input type="text" onChange={handleSearch} value={search} className="form-control" placeholder="Recherche ..."/>
+        <input
+          type="text"
+          onChange={handleSearch}
+          value={search}
+          className="form-control"
+          placeholder="Recherche ..."
+        />
       </div>
 
       <table className="table table-hover">
@@ -75,10 +90,15 @@ const PatientsPage = (props) => {
               <td>{patient.age}</td>
               <td>Par emma en cardiologie</td>
               <td>
-                <button className="btn btn-sm btn-danger">Supprimer</button>
+                <Link to={{
+                  pathname:'/sejours',
+                  aboutProps:{
+                    patient: patient,
+                  }
+                }}>Modifier</Link>
               </td>
-              <td>
-              </td>
+
+              <td></td>
               <td></td>
               <td></td>
             </tr>
@@ -88,8 +108,11 @@ const PatientsPage = (props) => {
 
       <div>
         <ul className="pagination pagination-sm">
-          <li className={"page-item" + (currentPage ===1 && "disabled")}>
-            <button className="page-link" onClick={() => handlePageChange(currentPage - 1)}>
+          <li className={"page-item" + (currentPage === 1 && "disabled")}>
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
               &laquo;
             </button>
           </li>
@@ -97,15 +120,23 @@ const PatientsPage = (props) => {
           {pages.map((page) => (
             <li
               key={page}
-              
-              className={"page-item" + (currentPage === page && "active")}>
-              <button className="page-link" onClick= {() => handlePageChange(page)}>
+              className={"page-item" + (currentPage === page && "active")}
+            >
+              <button
+                className="page-link"
+                onClick={() => handlePageChange(page)}
+              >
                 {page}
               </button>
             </li>
           ))}
-          <li className={"page-item" + (currentPage === pagesCount && "disabled")}>
-          <button className="page-link" onClick={() => handlePageChange(currentPage + 1)}>
+          <li
+            className={"page-item" + (currentPage === pagesCount && "disabled")}
+          >
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
               &raquo;
             </button>
           </li>

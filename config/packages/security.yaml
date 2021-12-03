@@ -49,5 +49,5 @@ security:
     - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
     #TO DO REMETTRE AVEC IS_AUTHENTICATED_FULLY SUR /API/
     - { path: ^/api/,       roles: IS_AUTHENTICATED_FULLY }
-    - { path: /api,       roles: IS_AUTHENTICATED_FULLY }
+    - { path: /api,       roles: IS_AUTHENTICATED_ANONYMOUSLY }
 
