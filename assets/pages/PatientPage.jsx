@@ -72,7 +72,7 @@ const PatientPage = (props) => {
         ></Field>
 
         <div className="form-group">
-          <button typer="submit" className="btn btn-success">
+          <button type="submit" className="btn btn-success">
             Enregistrer
           </button>
         </div>

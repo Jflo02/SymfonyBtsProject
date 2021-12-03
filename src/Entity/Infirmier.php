@@ -7,48 +7,60 @@ use App\Repository\InfirmierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * @ORM\Entity(repositoryClass=InfirmierRepository::class)
- * @ApiResource()
  */
+#[ApiResource(
+    normalizationContext: ['groups' => ['infirmiers_read']],
+    attributes: ["pagination_enabled" => false]
+)]
 class Infirmier
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"infirmiers_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"infirmiers_read"})
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"infirmiers_read"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"infirmiers_read"})
      */
     private $age;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"infirmiers_read"})
      */
     private $motDePasse;
 
     /**
      * @ORM\ManyToOne(targetEntity=Service::class, inversedBy="infirmiers")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"infirmiers_read"})
      */
     private $service;
 
     /**
      * @ORM\OneToOne(targetEntity=User::class, mappedBy="infirmier", cascade={"persist", "remove"})
+     * @Groups({"infirmiers_read"})
      */
     private $user;
 

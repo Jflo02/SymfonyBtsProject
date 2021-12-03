@@ -28,7 +28,7 @@ class Sejour
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"sejour_read", "patients_read", "lits_read"})
+     * @Groups({"sejour_read", "patients_read", "lits_read" })
      */
     private $dateEntree;
 

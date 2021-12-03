@@ -13,7 +13,8 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=PatientRepository::class)
  */
 #[ApiResource(
-    normalizationContext: ['groups' => ['patients_read']]
+    normalizationContext: ['groups' => ['patients_read']],
+    attributes: ["pagination_enabled" => false]
 )]
 class Patient
 {
