@@ -2,9 +2,9 @@ import axios from 'axios';
 import React, { useEffect } from 'react';
 import useState from "react-usestateref";
 import serverAddress from '../consts/ServerAddress';
-import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
-
+import SejourEnCours from '../components/sejours/SejourEnCours';
+import NewSejour from '../components/sejours/NewSejour';
 
 export default function Sejours(props) {
     const [loading, setLoading] = useState(true);
@@ -18,33 +18,31 @@ export default function Sejours(props) {
         "services": []
     });
     const [date, setDate] = useState(new Date());
+    const [usedLit, setUsedLit, usedLitRef] = useState("");
 
-
-
-    //Fake data
-    //TODO: recevoir en props le patient
+    //patient reçu en props ou a défaut du localStorage
     const [patient, setPatient, patientRef] = useState(
         props.location.aboutProps || JSON.parse(localStorage.getItem('patient'))
     );
 
     //on test si on reçoit un patient en props, si oui on le sauvegarde
-    if (props.location.aboutProps) {
-        //on le met en localStorage
-        // setPatient(props.location.aboutProps.patient)
-        localStorage.setItem(
-            'patient',
-            JSON.stringify(props.location.aboutProps))
+    const isPatientInProps = () => {
+        if (props.location.aboutProps) {
+            //on le met en localStorage
+            localStorage.setItem(
+                'patient',
+                JSON.stringify(props.location.aboutProps))
+        }
     }
 
-    const [usedLit, setUsedLit, usedLitRef] = useState("");
-
-
+    //Requete api pour récupérer tous les séjours
     const fetchSejours = async () => {
         const data = await axios.get(serverAddress + '/api/sejours')
             .then((response) => response.data["hydra:member"])
         setSejours(data)
     }
 
+    //Requete api pour récupérer tous les séjours
     const fetchLits = async () => {
         const data = await axios.get(serverAddress + '/api/lits')
             .then((response) => response.data["hydra:member"])
@@ -53,6 +51,7 @@ export default function Sejours(props) {
         LitsAvailable()
     }
 
+    //Trie des lits pour ne garder que ceux qui ne sont pas affécté
     const LitsAvailable = () => {
         litsRef.current.forEach(lit => {
             if (lit.sejours.length > 0) {
@@ -69,25 +68,29 @@ export default function Sejours(props) {
 
         });
     }
+
     //Formatter une date du JSON au format yyyy-MM-dd
     const formatYmd = date => date.slice(0, 10);
 
-
+    //Sauvegarde de la selection d'un lit
     const handleSelect = (selectedOption) => {
         setUsedLit(selectedOption.target.value)
     }
 
+    //Données à mettre en place au chargement de la page
     const setup = () => {
+        //si le Patient possède au moins un séjour, on prérempli la séléction du lit
         if (patientRef.current.patient.sejours.length > 0) {
             setUsedLit(patientRef.current.patient.sejours.at(-1).lit.substr(-2));
         }
         setLoading(false)
     }
 
+    //Renvoie un booléen
+    //Check si le patient a un séjour en cours
     const isSejourEnCoursForPatient = () => {
         //on vérifie tous les cas (le patient a t il des séjours
         //si oui sont ils terminés....
-
         //si il y a des séjours
         if (patientRef.current.patient.sejours.length > 0) {
             //si il y a pas de date de sortie au derrier séjour c'est en cours
@@ -104,22 +107,27 @@ export default function Sejours(props) {
         return false;
     }
 
+    //sauvegarde de la date d'un nouveau séjour
     const handleSelectDateEntreeNouveauSejour = (selectedOption) => {
         nouveauSejourRef.current.dateEntree = selectedOption
     }
 
+    //envoie du formulaire
     const handleSubmit = async event => {
         event.preventDefault();
     }
 
+    //???
     const handleModify = async event => {
         event.preventDefault();
     }
 
+    //lancement de fonctions importantes au lancement de la page
     useEffect(() => {
         fetchSejours()
         fetchLits()
         setup()
+        isPatientInProps()
 
     }, []);
     return (
@@ -138,52 +146,31 @@ export default function Sejours(props) {
             */}
 
                     {(isSejourEnCoursForPatient() == false) && (
-                        <>
-                            <p>Aucun séjour en cours</p>
-                            <p>Entrer la date de début</p>
-                            <form onSubmit={handleSubmit}>
-                                <label>Date Entrée : </label>
-                                <DatePicker selected={date} onChange={(date) => setDate(date)} />
-                                <label>Lit </label>
-                                <select name='lits' onChange={handleSelectDateEntreeNouveauSejour}>
-                                    {litsAvailableRef.current.map((lit) => (
-                                        < option value={lit.id} key={lit.id}  >
-                                            {lit.id}
-                                        </option>
-                                    ))}
-                                </select>
-                                <div className="form-group">
-                                    <button type="submit" className="btn btn-success">
-                                        Enregistrer
-                                    </button>
-                                </div>
-                            </form >
-                        </>
+                        <NewSejour
+                            handleSubmit={handleSubmit}
+                            date={date}
+                            handleSelectDateEntreeNouveauSejour={handleSelectDateEntreeNouveauSejour}
+                            litsAvailableRef={litsAvailableRef}
+                            setDate={setDate}
+                        />
                     )}
                     {/*
             TODO: Faire un genre de ternaire avec :() apres l accolade fermante
             */}
                     {(isSejourEnCoursForPatient() == true) && (
                         <>
-                            <p>un séjour est en cours</p>
-                            {/* on affiche la date d'entrée préremplie */}
-                            <form onSubmit={handleSubmit}>
-                                <label>Date Entrée : </label>
-                                <input type='date' name='dateEntree' value={formatYmd(patientRef.current.patient.sejours.at(-1).dateEntree)} ></input>
-                                <label>Lit </label>
-                                <select name='lits' value={usedLitRef.current} onChange={handleSelect}>
-                                    {litsAvailableRef.current.map((lit) => (
-                                        < option value={lit.id} key={lit.id}  >
-                                            {lit.id}
-                                        </option>
-                                    ))}
-                                </select>
-                                <div className="form-group">
-                                    <button type="submit" className="btn btn-success">
-                                        Enregistrer
-                                    </button>
-                                </div>
-                            </form >
+                            <SejourEnCours
+                                handleSubmit={handleSubmit}
+                                date={date}
+                                handleSelectDateEntreeNouveauSejour={handleSelectDateEntreeNouveauSejour}
+                                litsAvailableRef={litsAvailableRef}
+                                setDate={setDate}
+                                formatYmd={formatYmd}
+                                patientRef={patientRef}
+                                usedLitRef={usedLitRef}
+                                handleSelect={handleSelect}
+                            />
+
                         </>
                     )}
 
