@@ -58,23 +58,28 @@ export default function NewSejour({ nouveauSejourRef, litsAvailableRef, services
             <p>Merci de remplir les informations</p>
             <form onSubmit={handleSubmit}>
                 <label>Date Entrée : </label>
-                <DatePicker selected={dateHook} onChange={(date) => formatDate(date)} />
-                <label>Lit </label>
-                <select name='lits' onChange={(lit) => nouveauSejourRef.current.lit = "/api/lits/" + Number(lit.target.value)}>
-                    {litsAvailableRef.current.map((lit) => (
-                        < option value={lit.id} key={lit.id}  >
-                            {lit.id}
-                        </option>
-                    ))}
-                </select>
-                <label>Service </label>
-                <select name='service' onChange={(service) => serviceSejourRef.current.service = ('/api/services/' + service.target.value)}>
-                    {servicesRef.current.map((service) => (
-                        < option value={service.id} key={service.id}  >
-                            {service.nom}
-                        </option>
-                    ))}
-                </select>
+                <DatePicker className="m-3" selected={dateHook} onChange={(date) => formatDate(date)} />
+                <div className="row">
+
+                    <label className="m-3" >Lit </label>
+                    <select className="m-3 form-selec form-select-sm w-25" name='lits' onChange={(lit) => nouveauSejourRef.current.lit = "/api/lits/" + Number(lit.target.value)}>
+                        {litsAvailableRef.current.map((lit) => (
+                            < option value={lit.id} key={lit.id}  >
+                                {lit.id}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+                <div className="row">
+                    <label className="m-3 max-length">Service </label>
+                    <select className="m-3 form-selec form-select-sm w-25" name='service' onChange={(service) => serviceSejourRef.current.service = ('/api/services/' + service.target.value)}>
+                        {servicesRef.current.map((service) => (
+                            < option value={service.id} key={service.id}  >
+                                {service.nom}
+                            </option>
+                        ))}
+                    </select>
+                </div>
                 <div className="form-group">
                     <button type="submit" className="btn btn-success">
                         Enregistrer

@@ -18,18 +18,13 @@ import InfirmiersPage from "./pages/InfirmierPage";
 
 AuthAPI.setup();
 
-
-
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(AuthAPI.isAuthenticated)
-
     const NavbarWithRouter  = withRouter(Navbar);
-
     return (
     <AuthContext.Provider value={{isAuthenticated, setIsAuthenticated}}>
         <HashRouter> 
             <NavbarWithRouter/>
-
             <main className="container pt-5">
                 <Switch>
                     <Route path="/login"  component={LoginPage} />
@@ -38,7 +33,6 @@ const App = () => {
                     <PrivateRoute path="/sejours" component={Sejours}/>
                     <PrivateRoute path="/infirmier/:id" component={InfirmiersPage}/>
                     <PrivateRoute path="/infirmier" component={infirmierPage}/>
-                    
                     <Route path="/" component={HomePage}/>
                 </Switch>
             </main>         

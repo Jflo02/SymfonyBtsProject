@@ -126,7 +126,8 @@ export default function Sejours(props) {
     }
 
     const debugSejour = async () => {
-        console.log(servicesRef.current);
+        console.log(patientRef.current.patient);
+        console.log(isSejourEnCoursForPatient())
     }
 
     //lancement de fonctions importantes au lancement de la page
