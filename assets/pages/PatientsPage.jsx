@@ -40,10 +40,10 @@ const PatientsPage = (props) => {
   // d'ou on part (start) pendant combien (itemsPerpage)
   const start = currentPage * itemsPerpage - itemsPerpage;
   //               3 *         10           - 10   = 20
-  const pagignatedPatients = filteredPatients.slice(
+  const pagignatedPatients = filteredPatients.length > itemsPerpage ? filteredPatients.slice(
     start,
     start + itemsPerpage
-  );
+  ) : filteredPatients;
 
   return (
     <>
