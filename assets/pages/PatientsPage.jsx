@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom";
+import serverAddress from "../consts/ServerAddress";
 
 const PatientsPage = (props) => {
   const [patients, setPatients] = useState([]);
@@ -10,7 +11,7 @@ const PatientsPage = (props) => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:8000/api/patients")
+      .get(serverAddress+"/api/patients")
       .then((response) => response.data["hydra:member"])
       .then((data) => setPatients(data))
       .catch((error) => console.log(error.response));

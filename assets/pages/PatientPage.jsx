@@ -4,6 +4,8 @@ import Field from "./../components/forms/Field";
 import axios from "axios";
 import serverAddress from "../consts/ServerAddress";
 import patientsAPI from "../services/patientsAPI";
+import text from "../consts/text.json";
+import logAPI from "../services/logAPI";
 
 const PatientPage = (props) => {
   const { id = "new" } = props.match.params;
@@ -72,21 +74,27 @@ const PatientPage = (props) => {
           },
           requestConfig
         );
+
+        await logAPI.log(text["modifPatient"]+ id);
       } else {
         setErrors({});
-        await axios.post(serverAddress + "/api/patients", {
+        // ajout du patient
+        const request = await axios.post(serverAddress + "/api/patients", {
           age: Number(patient.age),
           nom: patient.lastName,
           prenom: patient.firstName,
           sejours: patient.sejours,
         });
-<<<<<<< HEAD
-        
-=======
+        try {
+          //ajout dans les logs
+          await logAPI.log(text["ajoutPatient"]+ request.data.id);
 
+        } catch (error){
+          console.log(error.response)
+        }
+        
         // TODO : notif de succès
         props.history.replace("/patients");
->>>>>>> c0260c3b01420dd98ba56b8877f67101d93184d1
       }
     } catch ({ response }) {
       const { violations } = response.data;

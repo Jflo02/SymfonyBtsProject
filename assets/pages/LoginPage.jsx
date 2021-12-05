@@ -4,6 +4,7 @@ import AuthAPI from "../services/authAPI";
 import AuthContext from "../contexts/AuthContext";
 import Field from "../components/forms/Field";
 import LogAPI from "../services/logAPI";
+import text from "../consts/text.json"
 
 const LoginPage = ({ history }) => {
   const { setIsAuthenticated } = useContext(AuthContext);
@@ -30,12 +31,13 @@ const LoginPage = ({ history }) => {
       await AuthAPI.authentificate(credentials);
       setError("");
       setIsAuthenticated(true);
+      localStorage.setItem('username', credentials.username);
       
     } catch (error) {
       setError("Aucun compte ne possède cette adresse");
     }
     try {
-        await LogAPI.logConnexion(credentials.username);
+        await LogAPI.log(text["connexionOK"]);
         history.replace("/");
     } catch (error){
       setError("pas de connexion");

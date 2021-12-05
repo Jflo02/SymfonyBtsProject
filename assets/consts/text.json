@@ -1,0 +1,6 @@
+{
+    "connexionOK":"Connexion réussi",
+    "connexionKo":"Deconnexion",
+    "ajoutPatient": "Ajout du patient: ",
+    "modifPatient":"Modification du patient: "
+}

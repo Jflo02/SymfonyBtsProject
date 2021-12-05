@@ -12,4 +12,4 @@ const Select = (name, value, label, onChange, children) => {
     );
 }
 
-export default Select; props
+export default Select;
