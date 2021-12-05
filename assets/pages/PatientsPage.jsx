@@ -75,7 +75,7 @@ const PatientsPage = (props) => {
             <th>Prenom</th>
             <th>Nom</th>
             <th>Age</th>
-            <th>Pris en charge</th>
+            <th>Prise en charge</th>
             <th></th>
             <th></th>
             <th></th>
@@ -88,22 +88,27 @@ const PatientsPage = (props) => {
               <td>{patient.prenom}</td>
               <td>{patient.nom}</td>
               <td>{patient.age}</td>
-              <td>Par emma en cardiologie</td>
               <td>
                 <Link to={{
                   pathname:'/sejours',
                   aboutProps:{
                     patient: patient,
                   }
-                }}>Modifier</Link>
+                }}>Prise en charge</Link>
               </td>
 
-              <td></td>
+              <td> 
+                <Link to={"/patients/"+ patient.id} className="btn btn-sm btn-primary mr-1">
+                  Modifier patient
+                </Link>
+
+                </td>
               <td></td>
               <td></td>
             </tr>
           ))}
         </tbody>
+
       </table>
 
       <div>

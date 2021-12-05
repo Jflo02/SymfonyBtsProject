@@ -3,6 +3,7 @@ import axios from "axios";
 import AuthAPI from "../services/authAPI";
 import AuthContext from "../contexts/AuthContext";
 import Field from "../components/forms/Field";
+import LogAPI from "../services/logAPI";
 
 const LoginPage = ({ history }) => {
   const { setIsAuthenticated } = useContext(AuthContext);
@@ -29,9 +30,16 @@ const LoginPage = ({ history }) => {
       await AuthAPI.authentificate(credentials);
       setError("");
       setIsAuthenticated(true);
-      history.replace("/");
+      
     } catch (error) {
       setError("Aucun compte ne possède cette adresse");
+    }
+    try {
+        await LogAPI.logConnexion(credentials.username);
+        history.replace("/");
+    } catch (error){
+      setError("pas de connexion");
+
     }
   };
 
