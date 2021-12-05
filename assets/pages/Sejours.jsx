@@ -11,19 +11,21 @@ export default function Sejours(props) {
     const [sejours, setSejours, sejoursRef] = useState([]);
     const [lits, setLits, litsRef] = useState([]);
     const [litsAvailable, setLitsAvailable, litsAvailableRef] = useState([]);
-    const [nouveauSejour, setNouveauSejour, nouveauSejourRef] = useState({
-        "dateEntree": "",
-        "dateSortie": "",
-        "lit": "",
-        "services": []
-    });
-    const [date, setDate] = useState(new Date());
+
     const [usedLit, setUsedLit, usedLitRef] = useState("");
 
     //patient reçu en props ou a défaut du localStorage
     const [patient, setPatient, patientRef] = useState(
         props.location.aboutProps || JSON.parse(localStorage.getItem('patient'))
     );
+
+    const [nouveauSejour, setNouveauSejour, nouveauSejourRef] = useState({
+        "dateEntree": new Date(),
+        "dateSortie": null,
+        "patient": "/api/patients/" + patientRef.current.patient.id,
+        "lit": "",
+        "services": []
+    });
 
     //on test si on reçoit un patient en props, si oui on le sauvegarde
     const isPatientInProps = () => {
@@ -94,7 +96,10 @@ export default function Sejours(props) {
         //si il y a des séjours
         if (patientRef.current.patient.sejours.length > 0) {
             //si il y a pas de date de sortie au derrier séjour c'est en cours
-            if (patientRef.current.patient.sejours.at(-1).dateSortie == "") {
+            if (patientRef.current.patient.sejours.at(-1).dateSortie == "" || typeof (patientRef.current.patient.sejours.at(-1).dateSortie) == null) {
+                return true;
+            }
+            else if (!("dateSortie" in patientRef.current.patient.sejours.at(-1))) {
                 return true;
             }
             else {
@@ -112,14 +117,15 @@ export default function Sejours(props) {
         nouveauSejourRef.current.dateEntree = selectedOption
     }
 
-    //envoie du formulaire
-    const handleSubmit = async event => {
-        event.preventDefault();
-    }
+
 
     //???
     const handleModify = async event => {
         event.preventDefault();
+    }
+
+    const debugSejour = () => {
+        console.log(patientRef.current.patient)
     }
 
     //lancement de fonctions importantes au lancement de la page
@@ -132,6 +138,8 @@ export default function Sejours(props) {
     }, []);
     return (
         <>
+            <span className="btn" onClick={debugSejour}>debug</span>
+
             {!loading && (
                 <>
 
@@ -147,11 +155,8 @@ export default function Sejours(props) {
 
                     {(isSejourEnCoursForPatient() == false) && (
                         <NewSejour
-                            handleSubmit={handleSubmit}
-                            date={date}
-                            handleSelectDateEntreeNouveauSejour={handleSelectDateEntreeNouveauSejour}
+                            nouveauSejourRef={nouveauSejourRef}
                             litsAvailableRef={litsAvailableRef}
-                            setDate={setDate}
                         />
                     )}
                     {/*
@@ -160,11 +165,9 @@ export default function Sejours(props) {
                     {(isSejourEnCoursForPatient() == true) && (
                         <>
                             <SejourEnCours
-                                handleSubmit={handleSubmit}
-                                date={date}
+                                // handleSubmit={handleSubmit}
                                 handleSelectDateEntreeNouveauSejour={handleSelectDateEntreeNouveauSejour}
                                 litsAvailableRef={litsAvailableRef}
-                                setDate={setDate}
                                 formatYmd={formatYmd}
                                 patientRef={patientRef}
                                 usedLitRef={usedLitRef}
