@@ -1,5 +1,6 @@
 import axios from 'axios';
 import jwtDecode from "jwt-decode";
+import serverAddress from "../consts/ServerAddress";
 
 /**
  * Déconnexion (suppression du token du localStorage et sur Axios)

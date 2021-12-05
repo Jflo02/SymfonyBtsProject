@@ -3,9 +3,14 @@ import { Link } from "react-router-dom";
 import Field from "./../components/forms/Field";
 import axios from "axios";
 import serverAddress from "../consts/ServerAddress";
+import patientsAPI from "../services/patientsAPI";
 
 const PatientPage = (props) => {
   const { id = "new" } = props.match.params;
+
+  const [requestConfig, setRequestConfig] = useState({
+    headers: { "Content-Type": "application/merge-patch+json" },
+  });
 
   const [patient, setPatient] = useState({
     lastName: "",
@@ -22,14 +27,11 @@ const PatientPage = (props) => {
 
   const [editing, setEditing] = useState(false);
 
+  // Recup du patient en focntion de l'id
   const fetchPatient = async (id) => {
     try {
-      const data = await axios
-        .get(serverAddress + "/api/patients/" + id)
-        .then((response) => response.data);
-      console.log(data);
-      const { nom, prenom, age, sejours } = data;
-
+      const data = await patientsAPI.find(id);
+      const { nom, prenom, age, sejours } = data
       setPatient({
         lastName: nom,
         firstName: prenom,
@@ -37,10 +39,11 @@ const PatientPage = (props) => {
         sejours: sejours,
       });
     } catch (error) {
-      console.log(error.response);
+      console.log(error);
+      // todo faire notif
     }
   };
-
+  // Chargement du patient si besoin au changement du composant ou chargement de l'id
   useEffect(() => {
     if (id != "new") {
       setEditing(true);
@@ -49,45 +52,51 @@ const PatientPage = (props) => {
     // a chaque fois que l'id a changé
   }, [id]);
 
+  // Gestion des changements des input dans le formulaire
   const handleChange = ({ currentTarget }) => {
     const { name, value } = currentTarget;
     setPatient({ ...patient, [name]: value });
   };
-
+  // gestion de la soumission du formulaire
   const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
       if (editing) {
-        console.log(patient);
-        const reponse = await axios.put(serverAddress + "/api/patients/" + id, {
-          id: id,
-          age: Number(patient.age),
-          nom: patient.lastName,
-          prenom: patient.firstName,
-          sejours: patient.sejours,
-        });
-
-        console.log(reponse);
-        console.log(reponse.data);
+        const reponse = await axios.patch(
+          serverAddress + "/api/patients/" + id,
+          {
+            age: Number(patient.age),
+            nom: patient.lastName,
+            prenom: patient.firstName,
+          },
+          requestConfig
+        );
       } else {
         setErrors({});
-        const response = await axios.post(serverAddress + "/api/patients", {
+        await axios.post(serverAddress + "/api/patients", {
           age: Number(patient.age),
           nom: patient.lastName,
           prenom: patient.firstName,
           sejours: patient.sejours,
         });
+<<<<<<< HEAD
         
+=======
+
+        // TODO : notif de succès
+        props.history.replace("/patients");
+>>>>>>> c0260c3b01420dd98ba56b8877f67101d93184d1
       }
-    } catch (error) {
-      if (error.response.data.violations) {
+    } catch ({ response }) {
+      const { violations } = response.data;
+      if (violations) {
         const apiErrors = {};
+        violations.forEach(({ propertyPath, message }) => {
+          apiErrors[propertyPath] = message;
+        });
+        setErrors(apiErrors);
       }
-      error.response.data.violations.forEach((violation) => {
-        apiErrors[violations.propertyPath] = violation.message;
-      });
-      setErrors(apiErrors);
     }
   };
 
@@ -135,4 +144,5 @@ const PatientPage = (props) => {
     </>
   );
 };
+
 export default PatientPage;
