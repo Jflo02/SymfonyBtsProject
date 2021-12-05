@@ -7,6 +7,7 @@ use App\Entity\Infirmier;
 use App\Entity\Lit;
 use App\Entity\Patient;
 use App\Entity\Sejour;
+use App\Entity\Service;
 use App\Entity\ServiceSejour;
 use App\Entity\User;
 use App\Repository\SejourRepository;
@@ -15,6 +16,7 @@ use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
+
 
 class AppFixtures extends Fixture
 {
@@ -39,11 +41,15 @@ class AppFixtures extends Fixture
 
     public function load(ObjectManager $manager): void
     {
+
+
+
         $faker = Factory::create('fr_FR');
 
         $chambreTab = [];
         $litTab = [];
         $patientTab = [];
+        $sejourTab = [];
 
         for ($c = 0; $c < 15; $c++) {
             $chambre = new Chambre();
@@ -64,11 +70,13 @@ class AppFixtures extends Fixture
             array_push($patientTab, $patient);
             $patient->setPrenom($faker->firstName)
                 ->setNom($faker->lastName)
-                ->setAge($faker->numberBetween(0, 100));
+                ->setAge($faker->numberBetween(0, 100))
+                ->setNumeroSecuriteSociale($faker->numberBetween(10000,29999));
             $manager->persist($patient);
 
             for ($s = 0; $s < mt_rand(1, 5); $s++) {
                 $sejour = new Sejour();
+                array_push($sejourTab,$sejour);
                 $sejour->setDateEntree($faker->dateTimeBetween($startDate = '-2 years', $endDate = '-1 years'))
                     ->setDateSortie($faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'))
                     ->setLit($faker->randomElement($litTab))
@@ -88,31 +96,38 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
 
-        $serviceTab = $this->serviceRepository->findAll();
+        $serviceTabmet= ["Cardiologie", "Pédiatrie", "Radiologie et imagerie médicale", "Médecine du sport","Neurologie", "Chirurgie ambulatoire"];
+        
+        for ($s = 0; $s < 5; $s++){
+            $servicemet = new Service();
+            $servicemet->setNom($serviceTabmet[$s]);
+            $manager->persist($servicemet);
 
-        $sejourTab = $this->sejourRepository->findAll();
+            for ($i = 0; $i < 20; $i++) {
+                $infirmier = new Infirmier();
+                $infirmier->setPrenom($faker->firstName)
+                    ->setNom($faker->lastName)
+                    ->setAge($faker->numberBetween(19, 65))
+                    ->setService($servicemet);
+    
+                $manager->persist($infirmier);
 
-        for ($i = 0; $i < 20; $i++) {
-            $infirmier = new Infirmier();
-            $infirmier->setPrenom($faker->firstName)
-                ->setNom($faker->lastName)
-                ->setAge($faker->numberBetween(19, 65))
-                ->setMotDePasse('Azerty')
-                ->setService($faker->randomElement($serviceTab));
-
-            $manager->persist($infirmier);
+            }
+            for ($ss = 0; $ss < 70; $ss++) {
+                $serviceSejour = new ServiceSejour();
+                $serviceSejour->setService($servicemet)
+                    ->setSejour($faker->randomElement($sejourTab))
+                    ->setDateEntree($faker->dateTimeBetween($startDate = '-2 years', $endDate = '-1 years'))
+                    ->setDateSortie($faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'));
+                $manager->persist($serviceSejour);
+    
+            }
+            
         }
+        
 
 
-        for ($ss = 0; $ss < 70; $ss++) {
-            $serviceSejour = new ServiceSejour();
-            $serviceSejour->setService($faker->randomElement($serviceTab))
-                ->setSejour($faker->randomElement($sejourTab))
-                ->setDateEntree($faker->dateTimeBetween($startDate = '-2 years', $endDate = '-1 years'))
-                ->setDateSortie($faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'));
-            $manager->persist($serviceSejour);
-
-        }
+        
 
 
         $manager->flush();

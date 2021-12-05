@@ -51,6 +51,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups(['users_read'])]
     private $infirmier;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Administratif::class, inversedBy="user", cascade={"persist", "remove"})
+     */
+    private $administratif;
+
     
 
     public function getId(): ?int
@@ -150,6 +155,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setInfirmier(?Infirmier $infirmier): self
     {
         $this->infirmier = $infirmier;
+
+        return $this;
+    }
+
+    public function getAdministratif(): ?Administratif
+    {
+        return $this->administratif;
+    }
+
+    public function setAdministratif(?Administratif $administratif): self
+    {
+        $this->administratif = $administratif;
 
         return $this;
     }

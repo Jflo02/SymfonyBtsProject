@@ -50,6 +50,12 @@ class Patient
      */
     private $sejours;
 
+    /**
+     * @ORM\Column(type="integer")
+     * @Groups({"patients_read"})
+     */
+    private $numeroSecuriteSociale;
+
 
     public function __construct()
     {
@@ -123,6 +129,18 @@ class Patient
                 $sejour->setPatient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNumeroSecuriteSociale(): ?int
+    {
+        return $this->numeroSecuriteSociale;
+    }
+
+    public function setNumeroSecuriteSociale(int $numeroSecuriteSociale): self
+    {
+        $this->numeroSecuriteSociale = $numeroSecuriteSociale;
 
         return $this;
     }

@@ -3,68 +3,41 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
-use App\Repository\InfirmierRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
+use App\Repository\AdministratifRepository;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Component\Serializer\Annotation\Groups;
-
 
 /**
- * @ORM\Entity(repositoryClass=InfirmierRepository::class)
+ * @ORM\Entity(repositoryClass=AdministratifRepository::class)
  */
-#[ApiResource(
-    normalizationContext: ['groups' => ['infirmiers_read']],
-    attributes: ["pagination_enabled" => false]
-)]
-class Infirmier
+#[ApiResource]
+class Administratif
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"infirmiers_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"infirmiers_read"})
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"infirmiers_read"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"infirmiers_read"})
      */
     private $age;
 
-
     /**
-     * @ORM\ManyToOne(targetEntity=Service::class, inversedBy="infirmiers")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups({"infirmiers_read"})
-     */
-    private $service;
-
-    /**
-     * @ORM\OneToOne(targetEntity=User::class, mappedBy="infirmier", cascade={"persist", "remove"})
-     * @Groups({"infirmiers_read"})
+     * @ORM\OneToOne(targetEntity=User::class, mappedBy="administratifId", cascade={"persist", "remove"})
      */
     private $user;
-
-
-    public function __construct()
-    {
-        $this->users = new ArrayCollection();
-    }
-
 
     public function getId(): ?int
     {
@@ -107,19 +80,6 @@ class Infirmier
         return $this;
     }
 
-
-    public function getService(): ?Service
-    {
-        return $this->service;
-    }
-
-    public function setService(?Service $service): self
-    {
-        $this->service = $service;
-
-        return $this;
-    }
-
     public function getUser(): ?User
     {
         return $this->user;
@@ -129,20 +89,16 @@ class Infirmier
     {
         // unset the owning side of the relation if necessary
         if ($user === null && $this->user !== null) {
-            $this->user->setInfirmier(null);
+            $this->user->setAdministratif(null);
         }
 
         // set the owning side of the relation if necessary
-        if ($user !== null && $user->getInfirmier() !== $this) {
-            $user->setInfirmier($this);
+        if ($user !== null && $user->getAdministratif() !== $this) {
+            $user->setAdministratif($this);
         }
 
         $this->user = $user;
 
         return $this;
     }
-
-
-
-
 }
