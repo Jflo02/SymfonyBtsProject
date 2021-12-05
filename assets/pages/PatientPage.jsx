@@ -78,6 +78,7 @@ const PatientPage = (props) => {
           prenom: patient.firstName,
           sejours: patient.sejours,
         });
+        
       }
     } catch (error) {
       if (error.response.data.violations) {

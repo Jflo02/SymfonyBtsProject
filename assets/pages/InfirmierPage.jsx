@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Field from './../components/forms/Field'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import Select from '../components/forms/select';
 
 const infirmiersPage = (props) => {
 
@@ -28,9 +29,15 @@ const infirmiersPage = (props) => {
     const fetchInfirmier = async id => {
         try{
             const data = await axios
-            .get("http://localhost:8000/api/infirmier/" + id)
+            .get("http://localhost:8000/api/infirmiers/" + id)
             .then(response => response.data);
-            console.log(data)
+        const { prenom, nom, age, service } = data;
+            
+        setInfirmiers({ 
+            firstName: prenom, 
+            lastName: nom, 
+            age: age, 
+            service: service})
         }catch(error) {
             console.log(error.response);
 
@@ -54,20 +61,41 @@ const infirmiersPage = (props) => {
 
     const handleSubmit = async event => {
         event.preventDefault();
+        console.log(infirmiers)
 
         try {
-            await axios.post("http://localhost:8000/api/infirmier", infirmiers);
+            if(editing) {
+                const reponse = await axios.put("http://127.0.0.1:8000/api/infirmiers/" + id, {
+                    id: id,
+                    age: Number(infirmiers.age),
+                    nom: infirmiers.lastName,
+                    prenom: infirmiers.firstName,
+                    service: infirmiers.service,
+                  });
+                console.log(response.data)
+            }
+            const response = await axios.post("http://127.0.0.1:8000/api/infirmiers", {
+                age: Number(infirmiers.age),
+                nom: infirmiers.lastName,
+                prenom: infirmiers.firstName,
+                service: infirmiers.service,
+              });
             setErrors({});
         } catch(error){
-            if(error.response.dat.violations){
+            if(error.response.data.violations){
                 const apiErrors = {};
-                error.response.date.violations.forEach(violation => {
+                error.response.data.violations.forEach(violation => {
                     apiErrors[violation.propertyPath] = violation.message;
                 })
             }
+
+            console.log(error.reponse)
+            
         }
 
-        setErrors(apiErrors);
+    
+
+        
     }
     return (
         <>
@@ -101,15 +129,12 @@ const infirmiersPage = (props) => {
                     onChange={handleChange}
                     //error={errors.age}
                 />
-                <Field
-                    name="service"
-                    label="service"
-                    placeholder="service"
-                    value={infirmiers.service}
-                    onChange={handleChange}
-                    //error={errors.service}
 
-                />
+                <Select name="service" label="service" value={infirmiers.service} onChange={handleChange}>
+                    <option value="1">Cardiologie</option>
+                    <option value="2">réanimation</option>   
+                </Select>
+                
 
                 <div className="form-group">
                     <button type="submit" className="btn btn-success">Enregistrer</button>
