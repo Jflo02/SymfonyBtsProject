@@ -3,6 +3,7 @@ import React from 'react'
 export default function SejourEnCours({ handleSubmit, litsAvailableRef, formatYmd, patientRef, usedLitRef, handleSelect }) {
     return (
         <div>
+            <p>sejour en cours</p>
             <form onSubmit={handleSubmit}>
                 <label>Date Entrée : </label>
                 <input type='date' name='dateEntree' value={formatYmd(patientRef.current.patient.sejours.at(-1).dateEntree)} ></input>
