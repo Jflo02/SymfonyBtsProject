@@ -21,7 +21,7 @@ function logout(){
 function authentificate(credentials) {
 
     return axios
-        .post("http://127.0.0.1:8000/api/login_check", credentials)
+        .post(serverAddress + "/api/login_check", credentials)
         .then((response) => response.data.token)
         .then(token => { 
                // je stock le token dans le localstorage

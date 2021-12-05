@@ -1,41 +1,56 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React from 'react';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import useState from 'react-usestateref';
+import serverAddress from '../../consts/ServerAddress';
 
-export default function NewSejour({ nouveauSejourRef, litsAvailableRef, }) {
+export default function NewSejour({ nouveauSejourRef, litsAvailableRef, servicesRef }) {
 
     //date au format du DatePicker pour l'afficher
     const [dateHook, setDateHook] = useState(new Date());
+    const [serviceSejour, setServiceSejour, serviceSejourRef] = useState({
+        "dateEntree": nouveauSejourRef.current.dateEntree,
+        "sejour": "",
+        "service": ""
+    })
 
     //envoie du formulaire
     const handleSubmit = async event => {
         event.preventDefault();
-
+        let idSejour = 0;
         try {
-            const response = await axios.post("http://localhost:8000/api/sejours", nouveauSejourRef.current);
+            const response = await axios.post(serverAddress + "/api/sejours", nouveauSejourRef.current);
+            idSejour = response.data.id
         } catch (error) {
             console.log(error.response);
         }
+        postService(idSejour);
     }
 
-    const debug = () => {
-        console.log(nouveauSejourRef.current)
-        // const dateFormat = Date.parse(nouveauSejourRef.current.dateEntree)
-        // console.log(dateFormat)
-        // console.log(new Intl.DateTimeFormat('fr-FR', {year: 'numeric', month: '2-digit',day: '2-digit'}).format(nouveauSejourRef.current.dateEntree));
+    //Ajout dans la table serviceSejour de la relation entre le sejour et le service
+    const postService = async (id) => {
+        try {
+            const postSejour = axios.post(serverAddress + "/api/service_sejours", {
+                "dateEntree": serviceSejourRef.current.dateEntree,
+                "sejour": "/api/sejours/" + id,
+                "service": serviceSejourRef.current.service
+            })
+        }
+        catch (error) {
+            console.log(error.response)
+        }
     }
 
+    //Formate la date au bon format pour l'api
+    //affecte la date au séjour et au serviceSejour
     const formatDate = (date) => {
         setDateHook(date)
-        console.log('formatdaet')
-        const dateFormat = Date.parse(date)
-        console.log(dateFormat)
-        var yourdate = (new Intl.DateTimeFormat(['ban', 'id']).format(date)).split("/").reverse().join("-");
-        // console.log(new Intl.DateTimeFormat('fr-FR', {year: 'numeric', month: '2-digit',day: '2-digit'}).format(nouveauSejourRef.current.dateEntree));
+        let yourdate = (new Intl.DateTimeFormat(['ban', 'id']).format(date)).split("/").reverse().join("-");
         nouveauSejourRef.current.dateEntree = yourdate;
-      }
-    
+        serviceSejourRef.current.dateEntree = yourdate;
+    }
+
 
     return (
         <div>
@@ -52,13 +67,20 @@ export default function NewSejour({ nouveauSejourRef, litsAvailableRef, }) {
                         </option>
                     ))}
                 </select>
+                <label>Service </label>
+                <select name='service' onChange={(service) => serviceSejourRef.current.service = ('/api/services/' + service.target.value)}>
+                    {servicesRef.current.map((service) => (
+                        < option value={service.id} key={service.id}  >
+                            {service.nom}
+                        </option>
+                    ))}
+                </select>
                 <div className="form-group">
                     <button type="submit" className="btn btn-success">
                         Enregistrer
                     </button>
                 </div>
             </form >
-            <span className="btn" onClick={debug}>debug</span>
         </div>
     )
 }

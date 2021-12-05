@@ -11,6 +11,7 @@ export default function Sejours(props) {
     const [sejours, setSejours, sejoursRef] = useState([]);
     const [lits, setLits, litsRef] = useState([]);
     const [litsAvailable, setLitsAvailable, litsAvailableRef] = useState([]);
+    const [services, setServices, servicesRef] = useState([]);
 
     const [usedLit, setUsedLit, usedLitRef] = useState("");
 
@@ -112,20 +113,20 @@ export default function Sejours(props) {
         return false;
     }
 
-    //sauvegarde de la date d'un nouveau séjour
-    const handleSelectDateEntreeNouveauSejour = (selectedOption) => {
-        nouveauSejourRef.current.dateEntree = selectedOption
-    }
-
-
-
     //???
     const handleModify = async event => {
         event.preventDefault();
     }
 
-    const debugSejour = () => {
-        console.log(patientRef.current.patient)
+    const findServices = async () => {
+        const data = axios
+            .get(serverAddress + "/api/services")
+            .then((response) => setServices(response.data["hydra:member"]));
+        // setServices(data);
+    }
+
+    const debugSejour = async () => {
+        console.log(servicesRef.current);
     }
 
     //lancement de fonctions importantes au lancement de la page
@@ -134,6 +135,7 @@ export default function Sejours(props) {
         fetchLits()
         setup()
         isPatientInProps()
+        findServices()
 
     }, []);
     return (
@@ -157,6 +159,7 @@ export default function Sejours(props) {
                         <NewSejour
                             nouveauSejourRef={nouveauSejourRef}
                             litsAvailableRef={litsAvailableRef}
+                            servicesRef={servicesRef}
                         />
                     )}
                     {/*
@@ -166,7 +169,7 @@ export default function Sejours(props) {
                         <>
                             <SejourEnCours
                                 // handleSubmit={handleSubmit}
-                                handleSelectDateEntreeNouveauSejour={handleSelectDateEntreeNouveauSejour}
+                                // handleSelectDateEntreeNouveauSejour={handleSelectDateEntreeNouveauSejour}
                                 litsAvailableRef={litsAvailableRef}
                                 formatYmd={formatYmd}
                                 patientRef={patientRef}
