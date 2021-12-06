@@ -35,7 +35,7 @@ class Administratif
     private $age;
 
     /**
-     * @ORM\OneToOne(targetEntity=User::class, mappedBy="administratifId", cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=User::class, mappedBy="administratif", cascade={"persist", "remove"})
      */
     private $user;
 

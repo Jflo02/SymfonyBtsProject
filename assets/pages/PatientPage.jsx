@@ -19,6 +19,7 @@ const PatientPage = (props) => {
     firstName: "",
     age: 0,
     sejours: [],
+    numeroSecuriteSociale : 0
   });
 
   const [errors, setErrors] = useState({
@@ -33,12 +34,13 @@ const PatientPage = (props) => {
   const fetchPatient = async (id) => {
     try {
       const data = await patientsAPI.find(id);
-      const { nom, prenom, age, sejours } = data
+      const { nom, prenom, age, sejours, numeroSecuriteSociale } = data
       setPatient({
         lastName: nom,
         firstName: prenom,
         age: age,
         sejours: sejours,
+        numeroSecuriteSociale : numeroSecuriteSociale
       });
     } catch (error) {
       console.log(error);
@@ -71,6 +73,7 @@ const PatientPage = (props) => {
             age: Number(patient.age),
             nom: patient.lastName,
             prenom: patient.firstName,
+            numeroSecuriteSociale : patient.numeroSecuriteSociale
           },
           requestConfig
         );
@@ -84,6 +87,7 @@ const PatientPage = (props) => {
           nom: patient.lastName,
           prenom: patient.firstName,
           sejours: patient.sejours,
+          numeroSecuriteSociale : patient.numeroSecuriteSociale
         });
         try {
           //ajout dans les logs
@@ -136,6 +140,15 @@ const PatientPage = (props) => {
           label="Age"
           placeholder="Age"
           value={patient.age}
+          onChange={handleChange}
+          //error={errors.age}
+        ></Field>
+
+<Field
+          name="numeroSecuriteSociale"
+          label="numeroSecuriteSociale"
+          placeholder="numeroSecuriteSociale"
+          value={patient.numeroSecuriteSociale}
           onChange={handleChange}
           //error={errors.age}
         ></Field>

@@ -76,6 +76,7 @@ const PatientsPage = (props) => {
             <th>Prenom</th>
             <th>Nom</th>
             <th>Age</th>
+            <th>Numero de sécurité social</th>
             <th>Prise en charge</th>
             <th></th>
             <th></th>
@@ -89,6 +90,7 @@ const PatientsPage = (props) => {
               <td>{patient.prenom}</td>
               <td>{patient.nom}</td>
               <td>{patient.age}</td>
+              <td>{patient.numeroSecuriteSociale}</td>
               <td>
                 <Link to={{
                   pathname:'/sejours',

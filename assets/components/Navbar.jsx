@@ -2,14 +2,18 @@ import React, { useContext } from 'react';
 import AuthAPI from '../services/authAPI';
 import { NavLink } from 'react-router-dom';
 import AuthContext from '../contexts/AuthContext';
+import logAPI from "../services/logAPI";
+import text from "../consts/text.json";
+
 
 
 const Navbar = ({ history}) => {
 
   const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
 
-  const handlelogout = () => {
+  const handlelogout = async () => {
 
+    await logAPI.log([text['connexionKo']])
     AuthAPI.logout();
     localStorage.removeItem('username');
     setIsAuthenticated(false);
