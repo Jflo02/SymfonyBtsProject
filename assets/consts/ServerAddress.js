@@ -1,3 +1,3 @@
-const serverAddress = 'http://127.0.0.1:8000';
+const serverAddress = process.env.serverAddress;
 
 export default serverAddress
