@@ -72,8 +72,14 @@ export default function Sejours(props) {
         });
     }
 
-    //Formatter une date du JSON au format yyyy-MM-dd
-    const formatYmd = date => date.slice(0, 10);
+    //Formater une date du JSON au format yyyy-MM-dd
+    const formatYmd = (date) => {
+        try {
+            return date.slice(0, 10);
+        } catch(error) {
+            return date;
+        }
+    }
 
     //Sauvegarde de la selection d'un lit
     const handleSelect = (selectedOption) => {

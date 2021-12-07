@@ -12,21 +12,23 @@ use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=ServiceRepository::class)
- * @ApiResource()
  */
+#[ApiResource(
+    normalizationContext: ['groups' => ['services_read']]
+)]
 class Service
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"infirmiers_read"})
+     * @Groups({"services_read", "infirmiers_read", "patients_read", "sejour_read"})
      */
     private $id;
     
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"infirmiers_read"})
+     * @Groups({"services_read", "infirmiers_read", "patients_read", "sejour_read"})
      */
     private $nom;
 

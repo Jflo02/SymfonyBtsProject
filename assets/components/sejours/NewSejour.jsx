@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import useState from 'react-usestateref';
 import serverAddress from '../../consts/ServerAddress';
+import ServiceSelect from '../ServicesSelect';
 
 export default function NewSejour({ nouveauSejourRef, litsAvailableRef, servicesRef }) {
 
@@ -51,6 +52,10 @@ export default function NewSejour({ nouveauSejourRef, litsAvailableRef, services
         serviceSejourRef.current.dateEntree = yourdate;
     }
 
+    const handleSelectService = (selectedOption) => {
+        serviceSejourRef.current.service = "/api/services/" + selectedOption.target.value;
+    }
+
 
     return (
         <div>
@@ -72,13 +77,16 @@ export default function NewSejour({ nouveauSejourRef, litsAvailableRef, services
                 </div>
                 <div className="row">
                     <label className="m-3 max-length">Service </label>
-                    <select className="m-3 form-selec form-select-sm w-25" name='service' onChange={(service) => serviceSejourRef.current.service = ('/api/services/' + service.target.value)}>
+                    {/* <select className="m-3 form-selec form-select-sm w-25" name='service' onChange={(service) => serviceSejourRef.current.service = ('/api/services/' + service.target.value)}>
                         {servicesRef.current.map((service) => (
                             < option value={service.id} key={service.id}  >
                                 {service.nom}
                             </option>
                         ))}
-                    </select>
+                    </select> */}
+                    <ServiceSelect 
+                    prop={serviceSejourRef}
+                    onSelect={handleSelectService}/>
                 </div>
                 <div className="form-group">
                     <button type="submit" className="btn btn-success">

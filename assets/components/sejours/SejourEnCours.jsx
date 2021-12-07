@@ -1,58 +1,183 @@
+import axios from 'axios';
 import React, { useEffect } from 'react'
 import DatePicker from 'react-datepicker'
 import useState from 'react-usestateref';
+import serverAddress from '../../consts/ServerAddress';
+import ServiceSelect from '../ServicesSelect';
 
 
-export default function SejourEnCours({ handleSubmit, litsAvailableRef, formatYmd, patientRef, usedLitRef, handleSelect }) {
-    const [dateHook, setDateHook] = useState(new Date());
+export default function SejourEnCours({ litsAvailableRef, formatYmd, patientRef, usedLitRef, handleSelect }) {
+    const [dateHook, setDateHook] = useState(null);
     const [dateDebutHook, setDateDebutHook] = useState(new Date());
     const [sejoursSaufDernier, setSejoursSaufDernier, sejoursSaufDernierRef] = useState(JSON.parse(JSON.stringify(patientRef.current.patient.sejours)));
-
-
+    const [serviceSejourSaufDernier, setServiceSejourSaufDernier, serviceSejourSaufDernierRef] = useState(JSON.parse(JSON.stringify(patientRef.current.patient.sejours.at(-1).services)));
+    const [changerServiceBool, setchangerServiceBool] = useState(false);
+    const [serviceSejour, setServiceSejour, serviceSejourRef] = useState({
+        "dateEntree": new Date(),
+        "sejour": "",
+        "service": ""
+    })
+    const [requestConfig, setRequestConfig] = useState({
+        headers: { "Content-Type": "application/merge-patch+json" },
+    });
+    const [nouveauServiceSejour, setnouveauServiceSejour, nouveauServiceSejourRef] = useState({
+        "dateEntree": new Date(),
+        "sejour": patientRef.current.patient.sejours.at(-1).id,
+        "service": ""
+    });
     const formatDate = (date) => {
         setDateHook(date)
         let yourdate = (new Intl.DateTimeFormat(['ban', 'id']).format(date)).split("/").reverse().join("-");
     }
 
     const debug = () => {
-        console.log(patientRef.current.patient)
-        console.log(sejoursSaufDernier)
+        console.log(serviceSejourSaufDernier)
+        console.log(patientRef.current.patient.sejours.at(-1).services.at(-1).service)
+        console.log(changerServiceBool)
     }
 
     const setup = () => {
-        const poped = sejoursSaufDernier.pop()
-        console.log(poped)
+        sejoursSaufDernier.pop()
+        serviceSejourSaufDernier.pop()
     }
+
+    const cloreSejour = () => {
+        console.log('je clore le séjour')
+    }
+
+    const changerService = () => {
+        console.log('je change le service')
+        setchangerServiceBool(!changerServiceBool)
+
+    }
+
+    const posterService = async () => {
+        //on patch le service sejour pour rajouter dateSortie a date now
+        console.log('je tente de poster le service')
+        try {
+            const response = await axios.patch(serverAddress + "/api/service_sejours/" + patientRef.current.patient.sejours.at(-1).services.at(-1).id, {
+                "dateSortie": new Date()
+            }, requestConfig);
+            console.log(response)
+        } catch (error) {
+            console.log(error.response.data);
+        }
+        // console.log(patientRef.current.patient.sejours.at(-1).services.at(-1).id)
+        //on post un new serviceSejour avec la service et la date entree a mtn
+        try {
+            const response = await axios.post(serverAddress + "/api/service_sejours", {
+                "dateEntree": new Date(),
+                "sejour": "/api/sejours/" + patientRef.current.patient.sejours.at(-1).id,
+                "service": "/api/services/" + nouveauServiceSejourRef.current.service
+            });
+            console.log(response)
+        } catch (error) {
+            console.log(error.response.data);
+        }
+    }
+
+    const handleSelectNouveauService = (selectedOption) => {
+        nouveauServiceSejourRef.current.service = selectedOption.target.value
+        console.log(nouveauServiceSejourRef.current.service)
+    }
+
     useEffect(() => {
         setup();
     }, [])
     return (
         <div>
-            <p>sejour en cours</p>
-            <form onSubmit={handleSubmit}>
-                <div className="row">
+            {/* de ICI CEST LE SEJOUR */}
+            <p>sejour n° {patientRef.current.patient.sejours.at(-1).id} en cours</p>
+            <form>
+                <div className="border">
+                    <div className="row">
+                        <p>Date Entrée : {formatYmd(patientRef.current.patient.sejours.at(-1).dateEntree)} </p>
+                    </div>
+                    <div className="row mt-3">
+                        <label>Date Sortie : </label>
+                        <DatePicker className="m-3" selected={dateHook} onChange={(date) => formatDate(date)} />
+                    </div>
+                    <label>Lit </label>
+                    <select name='lits' value={usedLitRef.current} onChange={handleSelect}>
+                        {litsAvailableRef.current.map((lit) => (
+                            < option value={lit.id} key={lit.id}  >
+                                {lit.id}
+                            </option>
+                        ))}
+                    </select>
 
-                    <label>Date Entrée : </label>
-                    <input type='date' name='dateEntree' value={formatYmd(patientRef.current.patient.sejours.at(-1).dateEntree)} ></input>
-                </div>
+                    {/* A ICI */}
+                    {/* LA ON SOCCUPE DU SERVICE EN COURS (a refactoriser en componenent) */}
+                    <div>blabla la on demande si il faut changer de service etc</div>
+                    <div>
+                        Service en cours : {patientRef.current.patient.sejours.at(-1).services.at(-1).service.nom}
+                    </div>
+                    <div>
+                        Date entrée service : {formatYmd(patientRef.current.patient.sejours.at(-1).services.at(-1).dateEntree)}
+                    </div>
+                    <span className="btn" onClick={() => cloreSejour()}>Clore le séjour</span>
+                    <span className="btn" onClick={() => changerService()}>Changer de service</span>
+                    <span className="btn" onClick={() => console.log(patientRef.current.patient.sejours.at(-1).services.at(-1))}>DEEEBUG</span>
+                    {/* 2 boutons => changer de service / clore le séjour  */}
+                    {/* Si clore le séjour => on met fin au service (dateSortie = now) + fin au séjour*/}
+                    {/* Si changer de service => on propose les champs d'ajout du nouveau service et lors de l'ajout on met fin au service précédent */}
+                    {(changerServiceBool == true) && (
+                        <div>
+                            ici on met un select avec les services et un bouton de validation
+                            {/* <ServiceSelect prop={handleSelectNouveauService} /> */}
+                            <ServiceSelect prop={nouveauServiceSejourRef} onSelect={handleSelectNouveauService} />
+                            <span className="btn" onClick={() => posterService()}>Faire le changement</span>
 
-                <div className="row mt-3">
-                    <label>Date Sortie : </label>
-                    <DatePicker className="m-3" selected={dateHook} onChange={(date) => formatDate(date)} />
+                        </div>
+                    )}
+
+                    {/* ICI ON S OCCUPE DE L HISTORIQUE DES SERVICES */}
+                    <div className="m-5">
+                        <p className="mt-2">Historique des services</p>
+                        <table className="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Identifiant</th>
+                                    <th>Date entrée</th>
+                                    <th>Date sortie</th>
+                                    <th>Service</th>
+
+                                </tr>
+                            </thead>
+                            <tbody>
+
+                                {serviceSejourSaufDernierRef.current.map((serviceSejour) => (
+                                    <tr key={serviceSejour.id}>
+                                        <td>{serviceSejour.id}</td>
+                                        <td>{formatYmd(serviceSejour.dateEntree)}</td>
+                                        <td>{formatYmd(serviceSejour.dateSortie)}</td>
+                                        <td>{serviceSejour.service.nom}</td>
+
+                                    </tr>
+                                ))}
+                                <tr>
+
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+
+
+
+                        </table>
+                    </div>
+
+                    <div className="form-group">
+                        <button type="submit" className="btn btn-success">
+                            Enregistrer
+                        </button>
+                    </div>
                 </div>
-                <label>Lit </label>
-                <select name='lits' value={usedLitRef.current} onChange={handleSelect}>
-                    {litsAvailableRef.current.map((lit) => (
-                        < option value={lit.id} key={lit.id}  >
-                            {lit.id}
-                        </option>
-                    ))}
-                </select>
-                <div className="form-group">
-                    <button type="submit" className="btn btn-success">
-                        Enregistrer
-                    </button>
-                </div>
+                <p className="mt-4">Séjours passés</p>
+
+                {/* dans le tableau on met tous les séjours passés (dateSortie not null && dateSortie < Date.now) */}
                 <table className="table table-hover">
                     <thead>
                         <tr>
@@ -60,41 +185,28 @@ export default function SejourEnCours({ handleSubmit, litsAvailableRef, formatYm
                             <th>Date entrée</th>
                             <th>Date sortie</th>
                             <th>Services</th>
-                            <th>Prise en charge</th>
-                            <th></th>
-                            <th></th>
-                            <th></th>
+
                         </tr>
                     </thead>
                     <tbody>
                         {sejoursSaufDernier.map((sejour) => (
                             <tr key={sejour.id}>
                                 <td>{sejour.id}</td>
-                                <td>{sejour.dateEntree}</td>
+                                <td>{formatYmd(sejour.dateEntree)}</td>
                                 <td>{sejour.dateSortie}</td>
                                 <td>{sejour.services.map((service) => {
                                     <div>
                                         <p>{service}</p>
-                                        {console.log(service)}
+                                        {/* {console.log(service)} */}
                                     </div>
                                 })}</td>
-                                <td>
-                                    lala
-                                </td>
-
-                                <td>
-                                    lala
-
-                                </td>
-                                <td></td>
-                                <td></td>
                             </tr>
                         ))}
                     </tbody>
 
                     <div className="m-3">
-                            sejour
-                            {/* 
+                        sejour
+                        {/* 
                             TODO:::: boucler sur les services du denrier séjour 
                             // il faut reconfigurer l api pour avoir + d'infos sur les services 
                             //les services terminés on ne peut pas les modifier par contre le dernier service il faut pourvoir le clore
@@ -104,8 +216,9 @@ export default function SejourEnCours({ handleSubmit, litsAvailableRef, formatYm
 
                 </table>
             </form >
+            <span className="btn" onClick={() => console.log(patientRef.current.patient)}>patient</span>
             <span className="btn" onClick={debug}>debug</span>
 
-        </div>
+        </div >
     )
 }
