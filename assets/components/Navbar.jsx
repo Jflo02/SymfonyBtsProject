@@ -47,7 +47,7 @@ const Navbar = ({ history}) => {
                 <NavLink to="/login" className="btn btn-success"> Connexion</NavLink>
             </li>
             <li className="nav-item">
-                <NavLink to="/register" className="btn nav-link"> Inscription</NavLink>
+                <NavLink to="/register" className="btn nav-link"></NavLink>
             </li> 
             </>
           )) || (
