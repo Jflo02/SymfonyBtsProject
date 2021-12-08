@@ -5,6 +5,7 @@ import serverAddress from '../consts/ServerAddress';
 import "react-datepicker/dist/react-datepicker.css";
 import SejourEnCours from '../components/sejours/SejourEnCours';
 import NewSejour from '../components/sejours/NewSejour';
+import patientsAPI from '../services/patientsAPI';
 
 export default function Sejours(props) {
     const [loading, setLoading] = useState(true);
@@ -76,7 +77,7 @@ export default function Sejours(props) {
     const formatYmd = (date) => {
         try {
             return date.slice(0, 10);
-        } catch(error) {
+        } catch (error) {
             return date;
         }
     }
@@ -133,7 +134,11 @@ export default function Sejours(props) {
 
     const debugSejour = async () => {
         console.log(patientRef.current.patient);
-        console.log(isSejourEnCoursForPatient())
+        // console.log(isSejourEnCoursForPatient())
+    }
+
+    const fetchPatient = async () => {
+        const data = patientsAPI.get(patientRef.current.patient.id)
     }
 
     //lancement de fonctions importantes au lancement de la page
@@ -147,6 +152,7 @@ export default function Sejours(props) {
     }, []);
     return (
         <>
+            <span className="btn" onClick={debugSejour} >patient</span>
             {!loading && (
                 <>
 

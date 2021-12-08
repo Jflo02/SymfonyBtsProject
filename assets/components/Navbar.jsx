@@ -13,11 +13,11 @@ const Navbar = ({ history}) => {
 
   const handlelogout = async () => {
 
+    setIsAuthenticated(false);
+    history.push("/login")
     await logAPI.log([text['connexionKo']])
     AuthAPI.logout();
     localStorage.removeItem('username');
-    setIsAuthenticated(false);
-    history.push("/login")
   }
     return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
@@ -35,9 +35,9 @@ const Navbar = ({ history}) => {
           <li className="nav-item">
             <NavLink className="nav-link" to="/infirmier">Infirmier</NavLink>
           </li>
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <NavLink className="nav-link" to="/chambres">Chambres</NavLink>
-          </li>
+          </li> */}
         </ul>
         <ul className="navbar-nav ml-auto">
           {(!isAuthenticated && (

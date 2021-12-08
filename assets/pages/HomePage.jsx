@@ -1,24 +1,16 @@
 import React from 'react';
 
 const HomePage = (props) => {
-    return ( <div className="list-group">
-    <a href="#" className="list-group-item list-group-item-action flex-column align-items-start active">
-      <div className="d-flex w-100 justify-content-between">
-        <h5 className="mb-1">List group item heading</h5>
-        <small>3 days ago</small>
-      </div>
-      <p className="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-      <small>Donec id elit non mi porta.</small>
-    </a>
+  return (<div className="list-group">
     <a href="#" className="list-group-item list-group-item-action flex-column align-items-start">
       <div className="d-flex w-100 justify-content-between">
-        <h5 className="mb-1">List group item heading</h5>
+        <h5 className="mb-1">Epsi Hopital</h5>
         <small className="text-muted">3 days ago</small>
       </div>
-      <p className="mb-1">Donec id elit non mi porta gravida at eget metus. Maecenas sed diam eget risus varius blandit.</p>
-      <small className="text-muted">Donec id elit non mi porta.</small>
+      <p className="mb-1">Bienvenue sur la platerfome de gestion de l'hopital Epsi</p>
+      <small className="text-muted">Vous pouvez vous authentifier si vous êtes un personnel administratif ou infirmier grâce au bouton connexion dans le coin superieur droit</small>
     </a>
-  </div> );
+  </div>);
 }
- 
+
 export default HomePage;
