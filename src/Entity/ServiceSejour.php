@@ -5,27 +5,34 @@ namespace App\Entity;
 use ApiPlatform\Core\Annotation\ApiResource;
 use App\Repository\ServiceSejourRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * @ORM\Entity(repositoryClass=ServiceSejourRepository::class)
- * @ApiResource()
  */
+#[ApiResource(
+    normalizationContext: ['groups' => ['serviceSejour_read']]
+)]
 class ServiceSejour
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"patients_read", "serviceSejour_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"patients_read", "serviceSejour_read"})
      */
     private $dateEntree;
 
     /**
      * @ORM\Column(type="datetime", nullable=true)
+     * @Groups({"patients_read", "serviceSejour_read"})
      */
     private $dateSortie;
 
@@ -38,6 +45,7 @@ class ServiceSejour
     /**
      * @ORM\ManyToOne(targetEntity=Service::class, inversedBy="sejours")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"patients_read", "serviceSejour_read"})
      */
     private $service;
 
