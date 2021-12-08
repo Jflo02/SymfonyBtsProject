@@ -73,7 +73,7 @@ const PatientPage = (props) => {
             age: Number(patient.age),
             nom: patient.lastName,
             prenom: patient.firstName,
-            numeroSecuriteSociale : patient.numeroSecuriteSociale
+            numeroSecuriteSociale : Number(patient.numeroSecuriteSociale)
           },
           requestConfig
         );
@@ -87,7 +87,7 @@ const PatientPage = (props) => {
           nom: patient.lastName,
           prenom: patient.firstName,
           sejours: patient.sejours,
-          numeroSecuriteSociale : patient.numeroSecuriteSociale
+          numeroSecuriteSociale : Number(patient.numeroSecuriteSociale)
         });
         try {
           //ajout dans les logs
