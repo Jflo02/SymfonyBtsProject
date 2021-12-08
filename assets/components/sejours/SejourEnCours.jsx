@@ -41,8 +41,17 @@ export default function SejourEnCours({ litsAvailableRef, formatYmd, patientRef,
         serviceSejourSaufDernier.pop()
     }
 
-    const cloreSejour = () => {
+    const cloreSejour = async () => {
         console.log('je clore le séjour')
+        try {
+            const response = await axios.patch(serverAddress + "/api/sejours/" + patientRef.current.patient.sejours.at(-1).id, {
+                "dateSortie": new Date()
+            }, requestConfig);
+            console.log(response)
+        } catch (error) {
+            console.log(error.response.data);
+        }
+
     }
 
     const changerService = () => {
@@ -89,13 +98,9 @@ export default function SejourEnCours({ litsAvailableRef, formatYmd, patientRef,
             {/* de ICI CEST LE SEJOUR */}
             <p>sejour n° {patientRef.current.patient.sejours.at(-1).id} en cours</p>
             <form>
-                <div className="border">
-                    <div className="row">
+                <div className="container">
+                    <div>
                         <p>Date Entrée : {formatYmd(patientRef.current.patient.sejours.at(-1).dateEntree)} </p>
-                    </div>
-                    <div className="row mt-3">
-                        <label>Date Sortie : </label>
-                        <DatePicker className="m-3" selected={dateHook} onChange={(date) => formatDate(date)} />
                     </div>
                     <label>Lit </label>
                     <select name='lits' value={usedLitRef.current} onChange={handleSelect}>
@@ -108,7 +113,7 @@ export default function SejourEnCours({ litsAvailableRef, formatYmd, patientRef,
 
                     {/* A ICI */}
                     {/* LA ON SOCCUPE DU SERVICE EN COURS (a refactoriser en componenent) */}
-                    <div>blabla la on demande si il faut changer de service etc</div>
+                    {/* <div>blabla la on demande si il faut changer de service etc</div> */}
                     <div>
                         Service en cours : {patientRef.current.patient.sejours.at(-1).services.at(-1).service.nom}
                     </div>
@@ -117,14 +122,12 @@ export default function SejourEnCours({ litsAvailableRef, formatYmd, patientRef,
                     </div>
                     <span className="btn" onClick={() => cloreSejour()}>Clore le séjour</span>
                     <span className="btn" onClick={() => changerService()}>Changer de service</span>
-                    <span className="btn" onClick={() => console.log(patientRef.current.patient.sejours.at(-1).services.at(-1))}>DEEEBUG</span>
                     {/* 2 boutons => changer de service / clore le séjour  */}
                     {/* Si clore le séjour => on met fin au service (dateSortie = now) + fin au séjour*/}
                     {/* Si changer de service => on propose les champs d'ajout du nouveau service et lors de l'ajout on met fin au service précédent */}
                     {(changerServiceBool == true) && (
                         <div>
-                            ici on met un select avec les services et un bouton de validation
-                            {/* <ServiceSelect prop={handleSelectNouveauService} /> */}
+                            {/* ici on met un select avec les services et un bouton de validation */}
                             <ServiceSelect prop={nouveauServiceSejourRef} onSelect={handleSelectNouveauService} />
                             <span className="btn" onClick={() => posterService()}>Faire le changement</span>
 
@@ -184,7 +187,6 @@ export default function SejourEnCours({ litsAvailableRef, formatYmd, patientRef,
                             <th>Identifiant</th>
                             <th>Date entrée</th>
                             <th>Date sortie</th>
-                            <th>Services</th>
 
                         </tr>
                     </thead>
@@ -193,13 +195,7 @@ export default function SejourEnCours({ litsAvailableRef, formatYmd, patientRef,
                             <tr key={sejour.id}>
                                 <td>{sejour.id}</td>
                                 <td>{formatYmd(sejour.dateEntree)}</td>
-                                <td>{sejour.dateSortie}</td>
-                                <td>{sejour.services.map((service) => {
-                                    <div>
-                                        <p>{service}</p>
-                                        {/* {console.log(service)} */}
-                                    </div>
-                                })}</td>
+                                <td>{formatYmd(sejour.dateSortie)}</td>
                             </tr>
                         ))}
                     </tbody>
@@ -216,8 +212,6 @@ export default function SejourEnCours({ litsAvailableRef, formatYmd, patientRef,
 
                 </table>
             </form >
-            <span className="btn" onClick={() => console.log(patientRef.current.patient)}>patient</span>
-            <span className="btn" onClick={debug}>debug</span>
 
         </div >
     )

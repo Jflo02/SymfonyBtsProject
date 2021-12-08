@@ -147,8 +147,6 @@ export default function Sejours(props) {
     }, []);
     return (
         <>
-            <span className="btn" onClick={debugSejour}>debug</span>
-
             {!loading && (
                 <>
 
