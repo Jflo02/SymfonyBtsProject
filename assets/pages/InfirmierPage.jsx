@@ -2,13 +2,12 @@ import React, { useState, useEffect } from 'react';
 import Field from './../components/forms/Field'
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import Select from '../components/forms/select';
 
-const infirmiersPage = (props) => {
+const infirmiersPage = (props,) => {
 
     const { id = "new" } = props.match.params;
 
-    
+    const [Service, setService] = useState([])
 
     const [infirmiers, setInfirmiers] = useState({
         lastName: "",
@@ -21,24 +20,25 @@ const infirmiersPage = (props) => {
         lastName: "Le nom est obligatoire",
         firstName: "",
         age: 0,
-        service: ""     
+        service: ""
     })
 
     const [editing, setEditing] = useState(false);
-    
+
     const fetchInfirmier = async id => {
-        try{
+        try {
             const data = await axios
-            .get("http://localhost:8000/api/infirmiers/" + id)
-            .then(response => response.data);
-        const { prenom, nom, age, service } = data;
-            
-        setInfirmiers({ 
-            firstName: prenom, 
-            lastName: nom, 
-            age: age, 
-            service: service})
-        }catch(error) {
+                .get("http://localhost:8000/api/infirmiers/" + id)
+                .then(response => response.data);
+            const { prenom, nom, age, service } = data;
+
+            setInfirmiers({
+                firstName: prenom,
+                lastName: nom,
+                age: age,
+                service: service
+            })
+        } catch (error) {
             console.log(error.response);
 
         }
@@ -46,32 +46,48 @@ const infirmiersPage = (props) => {
 
 
     useEffect(() => {
-        if(id !== "new") {
+        if (id !== "new") {
             setEditing(true);
             fetchInfirmier(id)
-        }   
+        }
     }, [id]);
 
-
-
-    const handleChange = ({currentTarget}) => {
-        const {name, value} = currentTarget;
-        setInfirmiers({...infirmiers, [name]: value});
+    const fetchService = async id => {
+        try {
+            const data = await axios.get("http://localhost:8000/api/services/" + id)
+            .then(response => response.data);
+            setService(data);
+            console.log(response.data)
+        } catch (error) {
+            console.log(error.reponse)
+        }
     }
+
+    useEffect(() => {
+        fetchService();
+    }, [])
+
+
+    const handleChange = ({ currentTarget }) => {
+        const { name, value } = currentTarget;
+        setInfirmiers({ ...infirmiers, [name]: value });
+
+    }
+
 
     const handleSubmit = async event => {
         event.preventDefault();
         console.log(infirmiers)
 
         try {
-            if(editing) {
+            if (editing) {
                 const reponse = await axios.put("http://127.0.0.1:8000/api/infirmiers/" + id, {
                     id: id,
                     age: Number(infirmiers.age),
                     nom: infirmiers.lastName,
                     prenom: infirmiers.firstName,
                     service: infirmiers.service,
-                  });
+                });
                 console.log(response.data)
             }
             const response = await axios.post("http://127.0.0.1:8000/api/infirmiers", {
@@ -79,10 +95,10 @@ const infirmiersPage = (props) => {
                 nom: infirmiers.lastName,
                 prenom: infirmiers.firstName,
                 service: infirmiers.service,
-              });
+            });
             setErrors({});
-        } catch(error){
-            if(error.response.data.violations){
+        } catch (error) {
+            if (error.response.data.violations) {
                 const apiErrors = {};
                 error.response.data.violations.forEach(violation => {
                     apiErrors[violation.propertyPath] = violation.message;
@@ -90,12 +106,13 @@ const infirmiersPage = (props) => {
             }
 
             console.log(error.reponse)
-            
+
         }
+        fetchService(Service)
 
-    
 
-        
+
+
     }
     return (
         <>
@@ -111,7 +128,7 @@ const infirmiersPage = (props) => {
                     placeholder="nom de la personne"
                     value={infirmiers.lastName}
                     onChange={handleChange}
-                    //error={errors.lastName}
+                //error={errors.lastName}
                 />
                 <Field
                     name="firstName"
@@ -119,7 +136,7 @@ const infirmiersPage = (props) => {
                     placeholder="prenom de la personne"
                     value={infirmiers.firstName}
                     onChange={handleChange}
-                    //error={errors.firstName}
+                //error={errors.firstName}
                 />
                 <Field
                     name="age"
@@ -127,14 +144,16 @@ const infirmiersPage = (props) => {
                     placeholder="âge de la personne"
                     value={infirmiers.age}
                     onChange={handleChange}
-                    //error={errors.age}
+                //error={errors.age}
                 />
 
-                <Select name="service" label="service" value={infirmiers.service} onChange={handleChange}>
-                    <option value="1">Cardiologie</option>
-                    <option value="2">réanimation</option>   
-                </Select>
-                
+                <div className="row">
+                    <label className="m-3 max-length">Service </label>
+                    <select  className="m-3 form-selec form-select-sm w-25" name='service'>
+                        {Service.map(service => <option key={service.id} value={service.id}> {service.nom} </option>)}
+                    </select>
+
+                </div>
 
                 <div className="form-group">
                     <button type="submit" className="btn btn-success">Enregistrer</button>
