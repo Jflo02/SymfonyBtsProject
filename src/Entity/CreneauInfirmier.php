@@ -32,12 +32,6 @@ class CreneauInfirmier
      */
     private $infirmier;
 
-
-    public function __construct()
-    {
-        $this->infirmier = new ArrayCollection();
-    }
-
     public function getId(): ?int
     {
         return $this->id;
