@@ -42,8 +42,6 @@ class AppFixtures extends Fixture
     public function load(ObjectManager $manager): void
     {
 
-
-
         $faker = Factory::create('fr_FR');
 
         $chambreTab = [];
@@ -96,7 +94,7 @@ class AppFixtures extends Fixture
             $manager->persist($user);
         }
 
-        $serviceTabmet= ["Cardiologie", "Pédiatrie", "Radiologie et imagerie médicale", "Médecine du sport","Neurologie", "Chirurgie ambulatoire"];
+        $serviceTabmet= ["Cardiologie", "Pédiatrie", "Radiologie et imagerie médicale", "Médecine du sport","Neurologie"];
         
         for ($s = 0; $s < 5; $s++){
             $servicemet = new Service();
@@ -120,16 +118,8 @@ class AppFixtures extends Fixture
                     ->setDateEntree($faker->dateTimeBetween($startDate = '-2 years', $endDate = '-1 years'))
                     ->setDateSortie($faker->dateTimeBetween($startDate = '-1 years', $endDate = 'now'));
                 $manager->persist($serviceSejour);
-    
-            }
-            
+            }           
         }
-        
-
-
-        
-
-
         $manager->flush();
     }
 }

@@ -59,11 +59,23 @@ class Infirmier
      */
     private $user;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Vaccination::class, mappedBy="infirmier")
+     */
+    private $vaccinations;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Creneauinfirmier::class, mappedBy="infirmier", orphanRemoval=true)
+     */
+    private $creneauinfirmiers;
+
 
     public function __construct()
     {
-        $this->users = new ArrayCollection();
+        $this->vaccinations = new ArrayCollection();
+        $this->creneauinfirmiers = new ArrayCollection();
     }
+
 
 
     public function getId(): ?int
@@ -138,6 +150,66 @@ class Infirmier
         }
 
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Vaccination[]
+     */
+    public function getVaccinations(): Collection
+    {
+        return $this->vaccinations;
+    }
+
+    public function addVaccination(Vaccination $vaccination): self
+    {
+        if (!$this->vaccinations->contains($vaccination)) {
+            $this->vaccinations[] = $vaccination;
+            $vaccination->setInfirmier($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVaccination(Vaccination $vaccination): self
+    {
+        if ($this->vaccinations->removeElement($vaccination)) {
+            // set the owning side to null (unless already changed)
+            if ($vaccination->getInfirmier() === $this) {
+                $vaccination->setInfirmier(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Creneauinfirmier[]
+     */
+    public function getCreneauinfirmiers(): Collection
+    {
+        return $this->creneauinfirmiers;
+    }
+
+    public function addCreneauinfirmier(Creneauinfirmier $creneauinfirmier): self
+    {
+        if (!$this->creneauinfirmiers->contains($creneauinfirmier)) {
+            $this->creneauinfirmiers[] = $creneauinfirmier;
+            $creneauinfirmier->setInfirmier($this);
+        }
+
+        return $this;
+    }
+
+    public function removeCreneauinfirmier(Creneauinfirmier $creneauinfirmier): self
+    {
+        if ($this->creneauinfirmiers->removeElement($creneauinfirmier)) {
+            // set the owning side to null (unless already changed)
+            if ($creneauinfirmier->getInfirmier() === $this) {
+                $creneauinfirmier->setInfirmier(null);
+            }
+        }
 
         return $this;
     }

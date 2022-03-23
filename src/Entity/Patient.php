@@ -56,10 +56,16 @@ class Patient
      */
     private $numeroSecuriteSociale;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Vaccination::class, mappedBy="patient")
+     */
+    private $vaccinations;
+
 
     public function __construct()
     {
         $this->sejours = new ArrayCollection();
+        $this->vaccinations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -145,5 +151,34 @@ class Patient
         return $this;
     }
 
+    /**
+     * @return Collection|Vaccination[]
+     */
+    public function getVaccinations(): Collection
+    {
+        return $this->vaccinations;
+    }
+
+    public function addVaccination(Vaccination $vaccination): self
+    {
+        if (!$this->vaccinations->contains($vaccination)) {
+            $this->vaccinations[] = $vaccination;
+            $vaccination->setPatient($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVaccination(Vaccination $vaccination): self
+    {
+        if ($this->vaccinations->removeElement($vaccination)) {
+            // set the owning side to null (unless already changed)
+            if ($vaccination->getPatient() === $this) {
+                $vaccination->setPatient(null);
+            }
+        }
+
+        return $this;
+    }
 
 }

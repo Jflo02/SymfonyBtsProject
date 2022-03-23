@@ -8,6 +8,7 @@ import serverAddress from "../consts/ServerAddress";
 
 function logout(){
     window.localStorage.removeItem("authToken");
+    window.localStorage.removeItem("username");
     delete axios.defaults.headers["Authorization"];
 }
 

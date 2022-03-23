@@ -47,7 +47,7 @@ const LoginPage = ({ history }) => {
 
   return (
     <>
-      <h1>Page d'Inscription</h1>
+      <h1>Connexion</h1>
 
       <form onSubmit={handleSubmit}>
         <Field
