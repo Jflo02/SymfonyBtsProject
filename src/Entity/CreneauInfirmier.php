@@ -7,6 +7,7 @@ use App\Repository\CreneauInfirmierRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
  * @ORM\Entity(repositoryClass=CreneauInfirmierRepository::class)
@@ -23,11 +24,12 @@ class CreneauInfirmier
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"infirmiers_read"})
      */
     private $date_vaccin;
 
     /**
-     * @ORM\ManyToOne(targetEntity=infirmier::class, inversedBy="creneauinfirmiers")
+     * @ORM\ManyToOne(targetEntity=Infirmier::class, inversedBy="creneauinfirmiers")
      * @ORM\JoinColumn(nullable=false)
      */
     private $infirmier;

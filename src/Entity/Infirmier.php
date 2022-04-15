@@ -65,7 +65,8 @@ class Infirmier
     private $vaccinations;
 
     /**
-     * @ORM\OneToMany(targetEntity=Creneauinfirmier::class, mappedBy="infirmier", orphanRemoval=true)
+     * @ORM\OneToMany(targetEntity=CreneauInfirmier::class, mappedBy="infirmier", orphanRemoval=true)
+     * @Groups({"infirmiers_read"})
      */
     private $creneauinfirmiers;
 

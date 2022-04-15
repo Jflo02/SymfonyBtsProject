@@ -27,18 +27,18 @@ class Vaccination
     private $date_vaccination;
 
     /**
-     * @ORM\OneToOne(targetEntity=vaccin::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Vaccin::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $vaccin;
 
     /**
-     * @ORM\ManyToOne(targetEntity=patient::class, inversedBy="vaccinations")
+     * @ORM\ManyToOne(targetEntity=Patient::class, inversedBy="vaccinations")
      */
     private $patient;
 
     /**
-     * @ORM\ManyToOne(targetEntity=infirmier::class, inversedBy="vaccinations")
+     * @ORM\ManyToOne(targetEntity=Infirmier::class, inversedBy="vaccinations")
      */
     private $infirmier;
 
