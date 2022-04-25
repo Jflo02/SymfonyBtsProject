@@ -11,7 +11,7 @@ const PatientsPage = (props) => {
 
   useEffect(() => {
     axios
-      .get(serverAddress+"/api/patients")
+      .get(serverAddress + "/api/patients")
       .then((response) => response.data["hydra:member"])
       .then((data) => setPatients(data))
       .catch((error) => console.log(error.response));
@@ -23,7 +23,6 @@ const PatientsPage = (props) => {
   const itemsPerpage = 10;
   const pagesCount = Math.ceil(patients.length / itemsPerpage);
   const pages = [];
-  console.log(" page count =" + pagesCount);
   for (let i = 1; i <= pagesCount; i++) {
     pages.push(i);
   }
@@ -41,21 +40,16 @@ const PatientsPage = (props) => {
   // d'ou on part (start) pendant combien (itemsPerpage)
   const start = currentPage * itemsPerpage - itemsPerpage;
   //               3 *         10           - 10   = 20
-  const pagignatedPatients = filteredPatients.length > itemsPerpage ? filteredPatients.slice(
-    start,
-    start + itemsPerpage
-  ) : filteredPatients;
+  const pagignatedPatients =
+    filteredPatients.length > itemsPerpage
+      ? filteredPatients.slice(start, start + itemsPerpage)
+      : filteredPatients;
 
   return (
     <>
       <div className="mb-3 d-flex justify-content-between align-items-center">
         <h1>Liste des patients</h1>
-        <Link
-          to="/patients/new"
-          className="btn btn-primary"
-          className="btn btn-primary"
-        >
-          {" "}
+        <Link to="/patients/new" className="btn btn-primary">
           Ajouter
         </Link>
       </div>
@@ -92,26 +86,31 @@ const PatientsPage = (props) => {
               <td>{patient.age}</td>
               <td>{patient.numeroSecuriteSociale}</td>
               <td>
-                <Link to={{
-                  pathname:'/sejours',
-                  aboutProps:{
-                    patient: patient,
-                  }
-                }}>Prise en charge</Link>
+                <Link
+                  to={{
+                    pathname: "/sejours",
+                    aboutProps: {
+                      patient: patient,
+                    },
+                  }}
+                >
+                  Prise en charge
+                </Link>
               </td>
 
-              <td> 
-                <Link to={"/patients/"+ patient.id} className="btn btn-sm btn-primary mr-1">
+              <td>
+                <Link
+                  to={"/patients/" + patient.id}
+                  className="btn btn-sm btn-primary mr-1"
+                >
                   Modifier patient
                 </Link>
-
-                </td>
+              </td>
               <td></td>
               <td></td>
             </tr>
           ))}
         </tbody>
-
       </table>
 
       <div>
