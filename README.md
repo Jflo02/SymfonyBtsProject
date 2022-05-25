@@ -22,7 +22,7 @@ composer install
 
 npm install
 
-symfony server:start
+php -S localhost:8000 -t public/
 
 npm run dev-server
 
