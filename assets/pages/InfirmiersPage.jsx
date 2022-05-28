@@ -41,7 +41,9 @@ const infirmierPage = (props) => {
   const filteredInfirmier = infirmiers.filter(
     (i) =>
       i.prenom.toLowerCase().includes(search.toLowerCase()) ||
-      i.nom.toLowerCase().includes(search.toLowerCase())
+      i.nom.toLowerCase().includes(search.toLowerCase()) ||
+      i.service.nom.toLowerCase().includes(search.toLocaleLowerCase()) ||
+      i.age == search
   );
 
   const start = currentPage * itemsPerPage - itemsPerPage;
