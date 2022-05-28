@@ -16,14 +16,14 @@ const infirmierPage = (props) => {
       .catch((error) => console.log(error.Response));
   }, []);
 
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
+
   const handleDelete = (id) => {
     axios
       .delete(serverAddress + "/api/infirmiers/" + id)
       .then((Response) => console.log(Response));
-  };
-
-  const handleChangePage = (page) => {
-    setCurrentPage(page);
   };
 
   const handleSearch = (event) => {
@@ -31,22 +31,20 @@ const infirmierPage = (props) => {
     setSearch(value);
   };
 
-  const itemsPerPage = 5;
-
-  const filteredInfirmier = infirmiers.filter(
-    (c) =>
-      c.prenom.toLowerCase().includes(search.toLowerCase()) ||
-      c.nom.toLowerCase().includes(search.toLowerCase())
-  );
-
-  const pageCount = Math.ceil(infirmiers.length / itemsPerPage);
+  const itemsPerPage = 10;
+  const pagesCount = Math.ceil(infirmiers.length / itemsPerPage);
   const pages = [];
-
-  for (let i = 1; i <= pageCount; i++) {
+  for (let i = 1; i <= pagesCount; i++) {
     pages.push(i);
   }
 
-  const start = currentPage + itemsPerPage - itemsPerPage;
+  const filteredInfirmier = infirmiers.filter(
+    (i) =>
+      i.prenom.toLowerCase().includes(search.toLowerCase()) ||
+      i.nom.toLowerCase().includes(search.toLowerCase())
+  );
+
+  const start = currentPage * itemsPerPage - itemsPerPage;
   const paginatedInfirmier =
     filteredInfirmier.length > itemsPerPage
       ? filteredInfirmier.slice(start, start + itemsPerPage)
@@ -106,6 +104,15 @@ const infirmierPage = (props) => {
 
       <div>
         <ul className="pagination pagination-sm">
+          <li className={"page-item" + (currentPage === 1 && "disabled")}>
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage - 1)}
+            >
+              &laquo;
+            </button>
+          </li>
+
           {pages.map((page) => (
             <li
               key={page}
@@ -113,12 +120,22 @@ const infirmierPage = (props) => {
             >
               <button
                 className="page-link"
-                onClick={() => handleChangePage(page)}
+                onClick={() => handlePageChange(page)}
               >
                 {page}
               </button>
             </li>
           ))}
+          <li
+            className={"page-item" + (currentPage === pagesCount && "disabled")}
+          >
+            <button
+              className="page-link"
+              onClick={() => handlePageChange(currentPage + 1)}
+            >
+              &raquo;
+            </button>
+          </li>
         </ul>
       </div>
     </>
