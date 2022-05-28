@@ -3,13 +3,14 @@ import Field from "./../components/forms/Field";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import serverAddress from "../consts/ServerAddress";
+import ServiceSelect from "../components/ServicesSelect";
 
 const infirmiersPage = (props) => {
   const { id = "new" } = props.match.params;
 
-  const [Service, setService] = useState([]);
+  const [service, setService] = useState([]);
 
-  const [infirmiers, setInfirmiers] = useState({
+  const [infirmier, setInfirmier] = useState({
     lastName: "",
     firstName: "",
     age: 0,
@@ -32,7 +33,7 @@ const infirmiersPage = (props) => {
         .then((response) => response.data);
       const { prenom, nom, age, service } = data;
 
-      setInfirmiers({
+      setInfirmier({
         firstName: prenom,
         lastName: nom,
         age: age,
@@ -67,7 +68,7 @@ const infirmiersPage = (props) => {
 
   const handleChange = ({ currentTarget }) => {
     const { name, value } = currentTarget;
-    setInfirmiers({ ...infirmiers, [name]: value });
+    setInfirmier({ ...infirmier, [name]: value });
   };
 
   const handleSubmit = async (event) => {
@@ -79,19 +80,19 @@ const infirmiersPage = (props) => {
           serverAddress + "/api/infirmiers/" + id,
           {
             id: id,
-            age: Number(infirmiers.age),
-            nom: infirmiers.lastName,
-            prenom: infirmiers.firstName,
-            service: infirmiers.service,
+            age: Number(infirmier.age),
+            nom: infirmier.lastName,
+            prenom: infirmier.firstName,
+            service: infirmier.service,
           }
         );
       }
 
       const response = await axios.post(serverAddress + "/api/infirmiers", {
-        age: Number(infirmiers.age),
-        nom: infirmiers.lastName,
-        prenom: infirmiers.firstName,
-        service: infirmiers.service,
+        age: Number(infirmier.age),
+        nom: infirmier.lastName,
+        prenom: infirmier.firstName,
+        service: infirmier.service,
       });
       setErrors({});
     } catch (error) {
@@ -104,8 +105,17 @@ const infirmiersPage = (props) => {
 
       console.log(error.reponse);
     }
-    fetchService(Service);
+    fetchService(service);
   };
+
+  const handleSelectService = (selectedOption) => {
+    console.log(selectedOption.target.value);
+    setInfirmier({
+      ...infirmier,
+      service: "/api/services/" + selectedOption.target.value,
+    });
+  };
+
   return (
     <>
       {(!editing && <h1>Création d'un infirmier</h1>) || (
@@ -117,7 +127,7 @@ const infirmiersPage = (props) => {
           name="lastName"
           label="nom"
           placeholder="nom de la personne"
-          value={infirmiers.lastName}
+          value={infirmier.lastName}
           onChange={handleChange}
           //error={errors.lastName}
         />
@@ -125,7 +135,7 @@ const infirmiersPage = (props) => {
           name="firstName"
           label="prenom"
           placeholder="prenom de la personne"
-          value={infirmiers.firstName}
+          value={infirmier.firstName}
           onChange={handleChange}
           //error={errors.firstName}
         />
@@ -133,20 +143,24 @@ const infirmiersPage = (props) => {
           name="age"
           label="age"
           placeholder="âge de la personne"
-          value={infirmiers.age}
+          value={infirmier.age}
           onChange={handleChange}
           //error={errors.age}
         />
 
         <div className="row">
-          <label className="m-3 max-length">Service </label>
+          <ServiceSelect
+            prop={service}
+            onSelect={(service) => handleSelectService(service)}
+          />
+          {/* <label className="m-3 max-length">Service </label>
           <select className="m-3 form-selec form-select-sm w-25" name="service">
-            {Service.map((service) => (
+            {service.map((service) => (
               <option key={service.id} value={service.id}>
                 {service.nom}
               </option>
             ))}
-          </select>
+          </select> */}
         </div>
 
         <div className="form-group">
