@@ -32,10 +32,13 @@ const PatientsPage = (props) => {
     setSearch(value);
   };
 
-  const filteredPatients =
-    patients.filter((c) =>
-      c.prenom.toLowerCase().includes(search.toLowerCase())
-    ) || c.nom.toLowerCase().includes(search.toLowerCase());
+  const filteredPatients = patients.filter(
+    (p) =>
+      p.prenom.toLowerCase().includes(search.toLowerCase()) ||
+      p.nom.toLowerCase().includes(search.toLowerCase()) ||
+      p.age == search ||
+      p.numeroSecuriteSociale.toString().includes(search.toString())
+  );
 
   // d'ou on part (start) pendant combien (itemsPerpage)
   const start = currentPage * itemsPerpage - itemsPerpage;
@@ -73,8 +76,6 @@ const PatientsPage = (props) => {
             <th>Numero de sécurité social</th>
             <th>Prise en charge</th>
             <th></th>
-            <th></th>
-            <th></th>
           </tr>
         </thead>
         <tbody>
@@ -106,8 +107,6 @@ const PatientsPage = (props) => {
                   Modifier patient
                 </Link>
               </td>
-              <td></td>
-              <td></td>
             </tr>
           ))}
         </tbody>
