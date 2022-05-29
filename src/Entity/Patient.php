@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\PatientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -16,6 +18,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['patients_read']],
     attributes: ["pagination_enabled" => false]
 )]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'prenom' => 'partial', 'nom' => 'exact', 'numeroSecuriteSociale' => 'partial'])]
+
+
 class Patient
 {
     /**
@@ -180,5 +185,4 @@ class Patient
 
         return $this;
     }
-
 }
