@@ -15,6 +15,7 @@ import contextValue from './contexts/AuthContext';
 import PatientPage from './pages/PatientPage';
 import infirmierPage from "./pages/InfirmiersPage";
 import InfirmiersPage from "./pages/InfirmierPage";
+import servicePage from "./pages/ServicePage";
 
 AuthAPI.setup();
 
@@ -33,6 +34,7 @@ const App = () => {
                     <PrivateRoute path="/sejours" component={Sejours}/>
                     <PrivateRoute path="/infirmier/:id" component={InfirmiersPage}/>
                     <PrivateRoute path="/infirmier" component={infirmierPage}/>
+                    <PrivateRoute path="/service" component={servicePage}/>
                     <Route path="/" component={HomePage}/>
                 </Switch>
             </main>         
