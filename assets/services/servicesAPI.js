@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios from "axios";
 import jwtDecode from "jwt-decode";
 
 /**
@@ -6,15 +6,12 @@ import jwtDecode from "jwt-decode";
  */
 
 function findAll() {
-    const data = axios
-        .get("http://127.0.0.1:8000/api/services")
-        .then((response) => response.data["hydra:member"]);
-        return data
-
-
+  const data = axios
+    .get("http://127.0.0.1:8000/api/services")
+    .then((response) => response.data["hydra:member"]);
+  return data;
 }
 
-
 export default {
-    findAll,
+  findAll,
 };
