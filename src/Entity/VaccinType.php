@@ -7,32 +7,40 @@ use App\Repository\VaccinTypeRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * @ORM\Entity(repositoryClass=VaccinTypeRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['vaccintype_read']]
+)]
 class VaccinType
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"vaccintype_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"vaccintype_read", "vaccin_read", "vaccination_read"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"vaccintype_read", "vaccination_read"})
      */
     private $stock;
 
     /**
      * @ORM\OneToMany(targetEntity=Vaccin::class, mappedBy="vaccin_type")
+     * @Groups({"vaccintype_read"})
      */
     private $vaccins;
 
@@ -100,5 +108,4 @@ class VaccinType
 
         return $this;
     }
-
 }

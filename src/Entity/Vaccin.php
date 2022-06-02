@@ -7,11 +7,15 @@ use App\Repository\VaccinRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+
 
 /**
  * @ORM\Entity(repositoryClass=VaccinRepository::class)
  */
-#[ApiResource]
+#[ApiResource(
+    normalizationContext: ['groups' => ['vaccin_read']]
+)]
 class Vaccin
 {
     /**
@@ -24,6 +28,7 @@ class Vaccin
     /**
      * @ORM\ManyToOne(targetEntity=VaccinType::class, inversedBy="vaccins")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"vaccin_read", "vaccination_read","sejour_read"})
      */
     private $vaccin_type;
 
@@ -43,5 +48,4 @@ class Vaccin
 
         return $this;
     }
-
 }

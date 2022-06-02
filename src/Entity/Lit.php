@@ -23,7 +23,7 @@ class Lit
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"lits_read"})
+     * @Groups({"lits_read", "sejour_read"})
      */
     private $id;
 
@@ -31,7 +31,7 @@ class Lit
     /**
      * @ORM\ManyToOne(targetEntity=Chambre::class, inversedBy="lit")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"lits_read"})
+     * @Groups({"lits_read", "sejour_read"})
      */
     private $chambre;
 

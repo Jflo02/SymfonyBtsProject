@@ -25,20 +25,20 @@ class Vaccination
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"vaccination_read"})
+     * @Groups({"vaccination_read", "sejour_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="datetime")
-     * @Groups({"vaccination_read"})
+     * @Groups({"vaccination_read", "sejour_read"})
      */
     private $date_vaccination;
 
     /**
      * @ORM\OneToOne(targetEntity=Vaccin::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"vaccination_read"})
+     * @Groups({"vaccination_read", "sejour_read"})
      */
     private $vaccin;
 
@@ -50,7 +50,7 @@ class Vaccination
 
     /**
      * @ORM\ManyToOne(targetEntity=Infirmier::class, inversedBy="vaccinations")
-     * @Groups({"vaccination_read"})
+     * @Groups({"vaccination_read", "sejour_read"})
      */
     private $infirmier;
 

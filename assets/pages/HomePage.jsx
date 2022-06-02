@@ -1,10 +1,10 @@
 import React from "react";
-import litsAPI from "../services/litsAPI";
+import sejoursAPI from "../services/sejoursAPI";
+import servicesAPI from "../services/servicesAPI";
+import serverAddress from "../consts/ServerAddress";
+import axios from "axios";
+
 const HomePage = (props) => {
-  const debug = async () => {
-    const debug = await litsAPI.findLitsLibre();
-    console.log(debug);
-  };
   return (
     <div className="list-group">
       <a
@@ -23,7 +23,6 @@ const HomePage = (props) => {
           ou infirmier grâce au bouton connexion dans le coin superieur droit
         </small>
       </a>
-      <button onClick={() => debug()}>DEBUG</button>
     </div>
   );
 };
