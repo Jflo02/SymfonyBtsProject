@@ -1,6 +1,4 @@
 import axios from 'axios'
-
-import { async } from 'regenerator-runtime'
 import serverAddress from '../consts/ServerAddress'
 
 function find(id) {
