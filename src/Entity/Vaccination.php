@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\DateFilter;
 
 /**
  * @ORM\Entity(repositoryClass=VaccinationRepository::class)
@@ -19,6 +20,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     attributes: ["pagination_enabled" => false]
 )]
 #[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'infirmier' => 'exact'])]
+#[ApiFilter(DateFilter::class, properties: ['date_vaccination'])]
 class Vaccination
 {
     /**
