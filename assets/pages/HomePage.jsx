@@ -1,10 +1,42 @@
-import React from "react";
-import litsAPI from "../services/litsAPI";
+import React, { useEffect } from "react";
+import serverAddress from "../consts/ServerAddress";
+import axios from "axios";
+import useState from "react-usestateref";
+
 const HomePage = (props) => {
-  const debug = async () => {
-    const debug = await litsAPI.findLitsOccupe();
-    console.log(debug);
+  const [lits, setLits, litsRef] = useState([]);
+  const [litsOccupe, setLitsOccupe, litsOccupeRef] = useState([]);
+
+  const fetchLits = async () => {
+    const data = await axios
+      .get(serverAddress + "/api/lits")
+      .then((response) => response.data["hydra:member"]);
+    setLits(data);
+    //on filtre les lits pour ne garder que ceux qui sont disponibles
+    LitsOccupation();
   };
+
+  const LitsOccupation = () => {
+    litsRef.current.forEach((lit) => {
+      //lit occupé si sejour.lenght > 0 et Last sejour.dateSortie is null
+      if (lit.sejours.length > 0) {
+        const dateSortieDernierSejour = Date.parse(
+          lit.sejours.at(-1).dateSortie
+        );
+        if (
+          dateSortieDernierSejour > Date.now() ||
+          isNaN(dateSortieDernierSejour)
+        ) {
+          setLitsOccupe([...litsOccupeRef.current, lit]);
+        }
+      }
+    });
+  };
+
+  useEffect(() => {
+    fetchLits();
+  }, []);
+
   return (
     <div className="list-group">
       <a
@@ -23,7 +55,11 @@ const HomePage = (props) => {
           ou infirmier grâce au bouton connexion dans le coin superieur droit
         </small>
       </a>
-      <button onClick={() => debug()}>DEBUG</button>
+
+      <h3 className="m-5">
+        {(litsOccupe.length / lits.length) * 100} % des lits occupés (
+        {litsOccupe.length} / {lits.length})
+      </h3>
     </div>
   );
 };

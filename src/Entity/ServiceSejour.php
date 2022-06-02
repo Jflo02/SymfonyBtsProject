@@ -45,7 +45,7 @@ class ServiceSejour
     /**
      * @ORM\ManyToOne(targetEntity=Service::class, inversedBy="sejours")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"patients_read", "serviceSejour_read"})
+     * @Groups({"patients_read", "serviceSejour_read", "sejour_read"})
      */
     private $service;
 

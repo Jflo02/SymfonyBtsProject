@@ -33,19 +33,19 @@ class Patient
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"patients_read"})
+     * @Groups({"patients_read", "sejour_read"})
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"patients_read"})
+     * @Groups({"patients_read", "sejour_read"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"patients_read"})
+     * @Groups({"patients_read", "sejour_read"})
      */
     private $age;
 

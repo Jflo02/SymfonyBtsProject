@@ -35,6 +35,9 @@ const Navbar = ({ history}) => {
           <li className="nav-item">
             <NavLink className="nav-link" to="/infirmier">Infirmier</NavLink>
           </li>
+          <li className="nav-item">
+            <NavLink className="nav-link" to="/sejoursencours">Sejours</NavLink>
+          </li>
           {/* <li className="nav-item">
             <NavLink className="nav-link" to="/chambres">Chambres</NavLink>
           </li> */}

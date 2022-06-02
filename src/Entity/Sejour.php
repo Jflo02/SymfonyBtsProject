@@ -2,7 +2,9 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\ExistsFilter;
 use App\Repository\SejourRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -15,6 +17,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
     normalizationContext: ['groups' => ['sejour_read']]
 )]
+#[ApiFilter(ExistsFilter::class, properties: ['dateSortie'])]
 class Sejour
 {
     /**
@@ -57,6 +60,12 @@ class Sejour
      * @Groups({"sejour_read", "patients_read", "lits_read"})
      */
     private $services;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"sejour_read", "patients_read", "lits_read"})
+     */
+    private $raisonAdmission;
 
     public function __construct()
     {
@@ -142,6 +151,18 @@ class Sejour
                 $service->setSejour(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getRaisonAdmission(): ?string
+    {
+        return $this->raisonAdmission;
+    }
+
+    public function setRaisonAdmission(?string $raisonAdmission): self
+    {
+        $this->raisonAdmission = $raisonAdmission;
 
         return $this;
     }
