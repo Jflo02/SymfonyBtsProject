@@ -13,9 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=VaccinRepository::class)
  */
-#[ApiResource(
-    normalizationContext: ['groups' => ['vaccin_read']]
-)]
+#[ApiResource()]
 class Vaccin
 {
     /**
@@ -28,7 +26,6 @@ class Vaccin
     /**
      * @ORM\ManyToOne(targetEntity=VaccinType::class, inversedBy="vaccins")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"vaccin_read", "vaccination_read","sejour_read"})
      */
     private $vaccin_type;
 

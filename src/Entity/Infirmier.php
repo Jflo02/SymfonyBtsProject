@@ -33,19 +33,19 @@ class Infirmier
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"infirmiers_read", "vaccination_read"})
+     * @Groups({"infirmiers_read"})
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"infirmiers_read", "vaccination_read"})
+     * @Groups({"infirmiers_read"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"infirmiers_read", "vaccination_read"})
+     * @Groups({"infirmiers_read"})
      */
     private $age;
 

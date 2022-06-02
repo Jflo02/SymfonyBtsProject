@@ -13,34 +13,28 @@ use Symfony\Component\Serializer\Annotation\Groups;
 /**
  * @ORM\Entity(repositoryClass=VaccinTypeRepository::class)
  */
-#[ApiResource(
-    normalizationContext: ['groups' => ['vaccintype_read']]
-)]
+#[ApiResource]
 class VaccinType
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"vaccintype_read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"vaccintype_read", "vaccin_read", "vaccination_read"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups({"vaccintype_read", "vaccination_read"})
      */
     private $stock;
 
     /**
      * @ORM\OneToMany(targetEntity=Vaccin::class, mappedBy="vaccin_type")
-     * @Groups({"vaccintype_read"})
      */
     private $vaccins;
 
