@@ -1,40 +1,63 @@
-import axios from "axios";
-import serverAddress from "../consts/ServerAddress";
+import axios from 'axios'
+
+import { async } from 'regenerator-runtime'
+import serverAddress from '../consts/ServerAddress'
 
 function find(id) {
   return axios
-    .get(serverAddress + "/api/lits/" + id)
-    .then((response) => response.data);
+    .get(serverAddress + '/api/lits/' + id)
+    .then((response) => response.data)
 }
 
 function findAll() {
   const data = axios
-    .get(serverAddress + "/api/lits/")
-    .then((response) => response.data["hydra:member"]);
-  return data;
+    .get(serverAddress + '/api/lits/')
+    .then((response) => response.data['hydra:member'])
+  return data
 }
 
-function findLitsOccupe() {
-  const allLits = axios
-    .get(serverAddress + "/api/lits/")
-    .then((response) => response.data["hydra:member"]);
-  //   const litsOccupe = [];
-  /*allLits.forEach((lit) => {
+async function findLitsOccupe() {
+  const allLits = await findAll()
+  const litsOccupe = []
+
+  allLits.forEach((lit) => {
     if (lit.sejours.length > 0) {
-      const dateSortieDernierSejour = Date.parse(lit.sejours.at(-1).dateSortie);
+      //date parse permet de changer en datetime
+      const dateSortieDernierSejour = Date.parse(lit.sejours.at(-1).dateSortie)
       if (
         dateSortieDernierSejour > Date.now() ||
         isNaN(dateSortieDernierSejour)
       ) {
-        litsOccupe.push(lit);
+        litsOccupe.push(lit)
       }
     }
-  });*/
-  return typeof allLits;
+  })
+
+  return litsOccupe
+}
+
+async function findLitsLibre() {
+  const allLits = await findAll()
+  const litsOccupe = await findLitsOccupe()
+  let numeroPosition = 0
+
+  allLits.forEach((lit) => {
+    litsOccupe.forEach((litOccupe) => {
+      if (lit.id === litOccupe.id) {
+        allLits.splice(numeroPosition, 1, 'occupé')
+      }
+    })
+    numeroPosition = 1 + numeroPosition
+  })
+
+  const litsLibre = allLits.filter((litLibre) => litLibre !== 'occupé')
+
+  return litsLibre
 }
 
 export default {
   find,
   findAll,
   findLitsOccupe,
-};
+  findLitsLibre,
+}

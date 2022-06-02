@@ -2,7 +2,7 @@ import React from "react";
 import litsAPI from "../services/litsAPI";
 const HomePage = (props) => {
   const debug = async () => {
-    const debug = await litsAPI.findLitsOccupe();
+    const debug = await litsAPI.findLitsLibre();
     console.log(debug);
   };
   return (

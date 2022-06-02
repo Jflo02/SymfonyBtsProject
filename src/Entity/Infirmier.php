@@ -19,7 +19,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
     normalizationContext: ['groups' => ['infirmiers_read']],
     attributes: ["pagination_enabled" => false]
 )]
-#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'prenom' => 'partial', 'nom' => 'exact', 'service' => 'exact'])]
+#[ApiFilter(SearchFilter::class, properties: ['id' => 'exact', 'prenom' => 'partial', 'nom' => 'exact', 'service.nom' => 'partial'])]
 
 class Infirmier
 {
@@ -27,7 +27,7 @@ class Infirmier
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups({"infirmiers_read"})
+     * @Groups({"infirmiers_read", "vaccination_read"})
      */
     private $id;
 

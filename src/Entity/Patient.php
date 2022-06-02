@@ -33,13 +33,13 @@ class Patient
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"patients_read"})
+     * @Groups({"patients_read", "vaccination_read"})
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"patients_read"})
+     * @Groups({"patients_read", "vaccination_read"})
      */
     private $nom;
 
@@ -63,6 +63,7 @@ class Patient
 
     /**
      * @ORM\OneToMany(targetEntity=Vaccination::class, mappedBy="patient")
+     * @Groups({"patients_read"})
      */
     private $vaccinations;
 
